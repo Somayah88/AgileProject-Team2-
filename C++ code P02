@@ -1,0 +1,40 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+using namespace std;
+
+int main() {
+
+	ifstream myReadFile;
+	myReadFile.open("FamilyTree.ged");
+	string line,levelNo, tag;
+	int flag=0;
+	string validTag[] = { "INDI", "NAME", "SEX", "BIRT", "DEAT", "FAMC", "FAMS", "FAM", "MARR", "HUSB", "WIFE", "CHIL", "DIV", "DATE", "TRLR", "NOTE" };
+	if (myReadFile.is_open()) {
+		while (!myReadFile.eof()) {
+
+			
+			myReadFile >> levelNo;
+			myReadFile >> tag;
+			getline(myReadFile, line);
+			cout <<levelNo <<" "<< tag << line << endl;
+			cout << "Level Number  " << levelNo << endl;
+			flag = 0;
+			for (int i = 0; i < 16; i++)
+			{
+				if (tag == validTag[i])
+				{
+					flag = 1;
+					break;
+				}
+			}
+			if (flag == 0)
+				cout << "Tag is invalid"<<endl<<"\n";
+			else
+				cout << "Tag is valid"<<endl<<"\n";
+		}
+	}
+	myReadFile.close();
+	return 0;
+}
+

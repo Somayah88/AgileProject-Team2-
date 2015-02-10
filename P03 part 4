@@ -9,14 +9,17 @@
 	   String birt;
 	   String fams;
 	   String famc;
+	   String indi;
 
-	   public Info(String n, String s, String b, String fs, String fc )
+	   public Info(String n, String s, String b, String fs, String fc , String id)
 	   {
 	     name = n; 
 	     sex = s; 
 	     birt = b; 
 	     fams = fs; 
 	     famc=fc;
+	     indi=id;
+	     System.out.println( indi + " " + name + " "+ sex + " " + birt + " " + fams + " " + famc  );
 	   }
 	}
 
@@ -34,16 +37,25 @@
 	            BufferedInputStream bis = new BufferedInputStream(fis);
 	    	    DataInputStream dis = new DataInputStream(bis);
 	            String Line;
-	            String name=null,sex = null,birt=null,famc=null,fams=null;
-		     
-	            
+	            String name=null,sex = null,birt=null,famc=null,fams=null, id=null;
+		     int flag=0;
 	            while (dis.available() != 0)
 	            {
 	             Line=dis.readLine();
 		       
 		        String[] info = Line.split(" ");
 	            String Level = info[0];
-	            String Tag = info[1];
+	            int level = Integer.parseInt(Level);
+	            String Tag=null;
+	            for(int l=0; l<info.length; l++)
+	            {
+	                if(!(Character.isDigit(info[l].charAt(0))) && !(info[l].matches("^.*[^a-zA-Z0-9 ].*$")) )
+	                {
+	                	Tag=info[l];
+	                 // System.out.println("Tag Name   "+ info[l] + "\n");
+	                  break;
+	                }
+	            }
 	          int c=0;
 	          /*    System.out.println(Line);
 	            System.out.println("Level:"+Level);
@@ -58,8 +70,15 @@
 	            else 
 	            	System.out.println("Invalid Tag");
 	          */  
-
-	        if (Tag.equals("NAME")) 
+	          
+	          if(Tag.equals("INDI"))
+	          {
+	        	  flag=1;
+	          }
+	          
+	       if(flag==1)
+	          {
+	        if (Tag.equals("NAME") && level==1) 
 	        {
 	        	name=info[2];
 	        }
@@ -80,24 +99,33 @@
 	        {
 	        	famc=info[2];
 	        }
-	        if(Tag.startsWith("@I"))
+	        else if(Tag.equals("INDI"))
+	        { 
+	        	id=info[1];
+	        	
+	        }
+	        if(Tag.equals("INDI") && name!=null)
 	        {
-	        
-	            Info individualData = new Info(name,sex,birt,fams,famc);
+	        	
+	            Info individualData = new Info(name,sex,birt,fams,famc,id);
 	            linky.add(individualData);
 	            name=null;
 	            sex =null;
 	            birt=null;
 	            famc=null;
 	            fams=null;
-	            
 	        }
+	            
+	          }
 	            }
-		    
 		      fis.close();
 		      bis.close();
 		      dis.close();
-
-		        }
+		   
+		    
+		        
 		  }
 		  
+	}
+		  
+	

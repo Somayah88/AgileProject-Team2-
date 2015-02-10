@@ -8,17 +8,11 @@ class Info
 {
 
 
-   String indi;
-   String name;
-   String sex;
-   String birt;
-   String fams;
-   String famc;
-
+   String indi, name, sex, birt, fams, famc;
+   String famid, ftag, IndiTag;
+   
    public Info(String id, String n, String s, String b, String fs, String fc)
    {
-
-
 	 indi=id; 
      name = n; 
      sex = s; 
@@ -26,6 +20,14 @@ class Info
      fams = fs; 
      famc=fc;
      System.out.println( indi + " " + name + " "+ sex + " " + birt + " " + fams + " " + famc  );
+   }
+   
+   public Info(String famId, String fTag, String Inditag)
+   {
+	 famid = famId;
+	 ftag = fTag;
+	 IndiTag = Inditag;
+     System.out.println( famId + " " + fTag +  " " + Inditag);
    }
 }
 
@@ -40,12 +42,15 @@ public class GEDCOM  {
 
 	     
 		    linkIndviduals = new LinkedList<Info>(); 
+		    linkFamilies = new LinkedList<Info>(); 
+		    
 	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/CS555-P03/src/SOLUTION/FamilyTree.ged");
-            BufferedInputStream bis = new BufferedInputStream(fis);
-    	    DataInputStream dis = new DataInputStream(bis);
+    	    DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
+    	    
             String Line;
             String name=null,sex = null,birt=null,famc=null,fams=null, id=null;
-	        int flag=0;
+            String FamilyId=null, tag=null, IndiTag=null;
+	        int indiFlag=0, famFlag=0;
 	        
             while (dis.available() != 0)
             {
@@ -77,43 +82,70 @@ public class GEDCOM  {
             else 
             	System.out.println("Invalid Tag");
           */  
-            if(flag!=0)
+            if(indiFlag!=0)
             {
             if (Tag.equals("NAME")) 
             {
             	name=info[2];
-            	flag++;
+            	indiFlag++;
             }
             else if (Tag.equals("SEX")) 
             {
             	sex=info[2];
-            	flag++;
+            	indiFlag++;
             }
     	      
             else if (Tag.equals("DATE")) 
             {
             	birt=info[2]+info[3]+info[4];
-            	flag++;
+            	indiFlag++;
             }
             else if (Tag.equals("FAMS")) 
             {
             	fams=info[2];
-            	flag++;
+            	indiFlag++;
             }
             else if (Tag.equals("FAMC")) 
             {
             	famc=info[2];
-            	flag++;
+            	indiFlag++;
+            }
+          
+           }
+           
+            if(famFlag!=0)
+            {
+            if (Tag.equals("HUSB")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+            	famFlag++;
+            	System.out.print(tag+ " " + IndiTag);
+            }
+            else if (Tag.equals("WIFE")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+            	famFlag++;
+            	System.out.print(tag+ " " + IndiTag);
+            }
+    	      
+            else if (Tag.equals("CHIL")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+            	famFlag++;
+            	System.out.print(tag+ " " + IndiTag);
             }
           
            }
             
-          if(Tag.equals("INDI"))
+          if(Tag.equals("INDI") || Tag.equals("FAM"))
           {
         	  if( id!=null){
         		  Info individualData = new Info(id, name,sex,birt,fams,famc);
                   linkIndviduals.add(individualData);
-                  flag = 0;
+                  indiFlag = 0;
            	      id = null;
                   name=null;
                   sex =null;
@@ -122,11 +154,24 @@ public class GEDCOM  {
                   fams=null;  
         	  }
         	  id = info[1];
-        	  flag++;
+        	  indiFlag++;
+          }
+          
+          if(Tag.equals("FAM")){
+        	  
+       	     if( FamilyId!= null){
+    		  Info FamiliesData = new Info(FamilyId, tag, IndiTag);
+              linkFamilies.add(FamiliesData);
+              famFlag = 0;
+              FamilyId = null;
+              tag=null;
+              IndiTag=null;
+             }
+       	     FamilyId = info[1];
+        	 famFlag++;
           }
         }
 	      fis.close();
-	      bis.close();
 	      dis.close();
 	   	   
 	      

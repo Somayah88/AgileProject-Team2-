@@ -45,10 +45,10 @@
 	            String Level = info[0];
 	            String Tag = info[1];
 	          int c=0;
-	             System.out.println(Line);
+	          /*    System.out.println(Line);
 	            System.out.println("Level:"+Level);
 	           
-	     /*       if (Tag.equals("INDI")|| (Tag.equals("NAME")) ||(Tag.equals("SEX"))||(Tag.equals("BIRT"))
+	           if (Tag.equals("INDI")|| (Tag.equals("NAME")) ||(Tag.equals("SEX"))||(Tag.equals("BIRT"))
 	            		|| (Tag.equals("DEAT")) ||( Tag.equals("FAMC"))||( Tag.equals("FAMS")) ||(Tag.equals("FAM"))
 	            		||( Tag.equals("MARR")) ||( Tag.equals("HUSB"))|| (Tag.equals("WIFE")) || (Tag.equals("CHIL"))|| 
 	            				(Tag.equals("DIV") )|| (Tag.equals("DATE")) || (Tag.equals("TRLR"))|| (Tag.equals("NOTE")))
@@ -70,7 +70,7 @@
 		      
 	        else if (Tag.equals("DATE")) 
 	        {
-	        	birt=info[2];
+	        	birt=info[2]+info[3]+info[4];
 	        }
 	        else if (Tag.equals("FAMS")) 
 	        {
@@ -85,6 +85,11 @@
 	        
 	            Info individualData = new Info(name,sex,birt,fams,famc);
 	            linky.add(individualData);
+	            name=null;
+	            sex =null;
+	            birt=null;
+	            famc=null;
+	            fams=null;
 	            
 	        }
 	            }

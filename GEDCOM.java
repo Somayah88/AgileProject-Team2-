@@ -32,19 +32,21 @@ class Info
 
 public class GEDCOM  {
 	
-    private static LinkedList<Info> linky;
+    private static LinkedList<Info> linkIndviduals;
+    private static LinkedList<Info> linkFamilies;
 
 	  @SuppressWarnings("deprecation")
 	public static void main(String[] args) throws IOException {
 
 	     
-		    linky = new LinkedList<Info>(); 
-	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/Copy of CS555-P03/src/SOLUTION/FamilyTree.ged");
+		    linkIndviduals = new LinkedList<Info>(); 
+	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/CS555-P03/src/SOLUTION/FamilyTree.ged");
             BufferedInputStream bis = new BufferedInputStream(fis);
     	    DataInputStream dis = new DataInputStream(bis);
             String Line;
             String name=null,sex = null,birt=null,famc=null,fams=null, id=null;
 	        int flag=0;
+	        
             while (dis.available() != 0)
             {
             Line=dis.readLine();
@@ -75,7 +77,7 @@ public class GEDCOM  {
             else 
             	System.out.println("Invalid Tag");
           */  
-            if(flag<= 6 || id!=null)
+            if(flag!=0)
             {
             if (Tag.equals("NAME")) 
             {
@@ -104,21 +106,21 @@ public class GEDCOM  {
             	flag++;
             }
           
-           if(flag > 6){
-               Info individualData = new Info(id, name,sex,birt,fams,famc);
-               linky.add(individualData);
-               flag = 0;
-        	   id = null;
-               name=null;
-               sex =null;
-               birt=null;
-               famc=null;
-               fams=null;
-           }
            }
             
           if(Tag.equals("INDI"))
           {
+        	  if( id!=null){
+        		  Info individualData = new Info(id, name,sex,birt,fams,famc);
+                  linkIndviduals.add(individualData);
+                  flag = 0;
+           	      id = null;
+                  name=null;
+                  sex =null;
+                  birt=null;
+                  famc=null;
+                  fams=null;  
+        	  }
         	  id = info[1];
         	  flag++;
           }
@@ -126,9 +128,12 @@ public class GEDCOM  {
 	      fis.close();
 	      bis.close();
 	      dis.close();
-	   
-	    
-	        
+	   	   
+	      
+	  }
+	  
+	  private static void StoreFamilies(){
+		  
 	  }
 	  
 }

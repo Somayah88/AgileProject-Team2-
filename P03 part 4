@@ -104,7 +104,7 @@
 	        	id=info[1];
 	        	
 	        }
-	        if(Tag.equals("INDI") && name!=null)
+	        if(id!=null && name!=null)
 	        {
 	        	
 	            Info individualData = new Info(name,sex,birt,fams,famc,id);
@@ -114,6 +114,7 @@
 	            birt=null;
 	            famc=null;
 	            fams=null;
+	            
 	        }
 	            
 	          }

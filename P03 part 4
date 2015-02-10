@@ -83,7 +83,7 @@
 	        if(Tag.startsWith("@I"))
 	        {
 	        	c++;
-	        	if(c>=1)
+	        	if(c>1)
 	        	{
 	            Info individualData = new Info(name,sex,birt,fams,famc);
 	            linky.add(individualData);

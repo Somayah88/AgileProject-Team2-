@@ -27,7 +27,7 @@ class Info
 	 famid = famId;
 	 ftag = fTag;
 	 IndiTag = Inditag;
-     System.out.println( famId + " " + fTag +  " " + Inditag);
+     System.out.println( "Family Begin" + famId + " " + fTag +  " " + Inditag);
    }
 }
 
@@ -113,32 +113,31 @@ public class GEDCOM  {
           
            }
            
-            if(famFlag!=0)
-            {
-            if (Tag.equals("HUSB")) 
+
+           if (Tag.equals("HUSB")) 
             {
             	tag=info[1];
             	IndiTag=info[2];
-            	famFlag++;
-            	System.out.print(tag+ " " + IndiTag);
+      		    Info FamiliesData = new Info(FamilyId, tag, IndiTag);
+                linkFamilies.add(FamiliesData);
             }
             else if (Tag.equals("WIFE")) 
             {
             	tag=info[1];
             	IndiTag=info[2];
-            	famFlag++;
-            	System.out.print(tag+ " " + IndiTag);
+            	Info FamiliesData = new Info(FamilyId, tag, IndiTag);
+                linkFamilies.add(FamiliesData);
             }
     	      
             else if (Tag.equals("CHIL")) 
             {
             	tag=info[1];
             	IndiTag=info[2];
-            	famFlag++;
-            	System.out.print(tag+ " " + IndiTag);
+            	Info FamiliesData = new Info(FamilyId, tag, IndiTag);
+                linkFamilies.add(FamiliesData);
             }
           
-           }
+
             
           if(Tag.equals("INDI") || Tag.equals("FAM"))
           {
@@ -159,15 +158,16 @@ public class GEDCOM  {
           
           if(Tag.equals("FAM")){
         	  
-       	     if( FamilyId!= null){
+       	    /* if( FamilyId!= null){
     		  Info FamiliesData = new Info(FamilyId, tag, IndiTag);
               linkFamilies.add(FamiliesData);
               famFlag = 0;
               FamilyId = null;
               tag=null;
               IndiTag=null;
-             }
+             }*/
        	     FamilyId = info[1];
+        	 if(famFlag==1) famFlag=0;
         	 famFlag++;
           }
         }

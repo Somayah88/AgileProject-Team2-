@@ -15,7 +15,7 @@ public class GEDCOM  {
 		    linkIndviduals = new String[5000]; 
 		    linkFamilies = new String[1000]; 
 		    
-	    	FileInputStream  fis = new FileInputStream("FamilyTreeP.ged");
+	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/CS555-P03/src/SOLUTION/FamilyTree.ged");
     	    DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
     	    
             String Line;
@@ -135,13 +135,13 @@ public class GEDCOM  {
 	        	  for (int l=0; l<linkIndviduals.length && linkIndviduals[l] != null; l++){
 	        		  String[] info1 = linkIndviduals[l].split(" ");
 	    	          if(info[2].equals(info1[0]) )
-	    	        	System.out.println("The husband Name:" + info1[1] + " " + info1[2]);
+	    	        	System.out.println("The husband Name for " + info[0] + " : " + info1[1] + " " + info1[2]);
 	        	  }
 	          } else if(info[1].equalsIgnoreCase("WIFE") ){
 	        	  for (int l=0; l<linkIndviduals.length && linkIndviduals[l] != null; l++){
 	        		  String[] info1 = linkIndviduals[l].split(" ");
 	        		  if(info[2].equals(info1[0]) )
-	    	        	System.out.println("The wife Name:" + info1[1] + " " + info1[2]);
+	    	        	System.out.println("The wife Name for " + info[0] + " :" + info1[1] + " " + info1[2]);
 	        	  }
 	          }
 	        }

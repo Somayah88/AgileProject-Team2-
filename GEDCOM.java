@@ -15,7 +15,7 @@ public class GEDCOM  {
 		    linkIndviduals = new String[5000]; 
 		    linkFamilies = new String[1000]; 
 		    
-	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/CS555-P03/src/SOLUTION/FamilyTree.ged");
+	    	FileInputStream  fis = new FileInputStream("FamilyTreeP.ged");
     	    DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
     	    
             String Line;

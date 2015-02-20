@@ -1,0 +1,225 @@
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+
+class IndividualRecord {
+
+	String SEX;
+	String Id;
+	String BirthDate;
+	Date DeathDate;
+	String FamS;
+	String FamC;
+	String Marr;
+	String husb;
+	String wife;
+	String Fam;
+	String Name;
+
+	public IndividualRecord(String id, String name, String sex, String birthdate, String Fams, String Famc  )
+	{ this.Id=id;
+	this.Name=name;
+	this.SEX=sex;
+	this.BirthDate=birthdate;
+	//this.DeathDate=deathdate;
+	this.FamS=Fams;
+	this.FamC=Famc;
+
+	}
+
+
+}
+class FamilyInfo{
+	String FamilyId;
+	String HusbandId;
+	String WifeId;
+	List <String> ChlidrenIds;
+	
+//	public FamilyInfo (String familyId, String husbandId, String wifeId)
+//	{
+//		this.FamilyId=familyId;
+//		this.HusbandId=husbandId;
+//		this.WifeId=wifeId;
+//		
+//	}
+}
+	
+public class P03  {
+	
+
+  
+    private  static IndividualRecord[] indRecords;
+    private static FamilyInfo [] Family; 
+    
+    
+
+	  @SuppressWarnings("deprecation")
+	public static void main(String[] args) throws IOException {
+
+	     
+
+		   // linkFamilies = new String[1000]; 
+		    indRecords =new IndividualRecord[5000];
+		    Family=new FamilyInfo[1000];
+		    
+		    
+		    
+	    	FileInputStream  fis = new FileInputStream("FamilyTreeP.ged");
+    	    DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
+    	    
+            String Line;
+            String name=null,sex = null,famc=null,fams=null, id=null;
+            String FamilyId=null, tag=null, IndiTag=null;
+            String birt=null, WifeId=null,HusbId=null;
+	        int indiFlag=0, item=0, item1=0;
+	        
+            while (dis.available() != 0)
+            {
+            Line=dis.readLine();
+	       
+	        String[] info = Line.split(" ");
+            //String Level = info[0];
+            String Tag=null;
+            for(int l=0; l<info.length; l++)
+            {
+                if(!(Character.isDigit(info[l].charAt(0))) && !(info[l].matches("^.*[^a-zA-Z0-9 ].*$")) )
+                {
+                  Tag=info[l];
+                  break;
+                }
+            }
+            if (Tag.equals("NAME")) 
+            {
+            	name=info[2]+" "+info[3];
+            	indiFlag++;
+            }
+            else if (Tag.equals("SEX")) 
+            {
+            	sex=info[2];
+            	indiFlag++;
+            }
+    	      
+            else if (Tag.equals("DATE")) 
+            {
+          
+            	birt=info[2]+info[3]+info[4];
+            	indiFlag++;
+            }
+            else if (Tag.equals("FAMS")) 
+            {
+            	fams=info[2];
+            	indiFlag++;
+            }
+            else if (Tag.equals("FAMC")) 
+            {
+            	famc=info[2];
+            	indiFlag++;
+            }
+          
+           
+           if (Tag.equals("HUSB")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+            	System.out.println(tag + " " + IndiTag);
+            	
+      		     HusbId=IndiTag;
+      		     Family[item].HusbandId=HusbId;
+      		     
+      	 
+            }
+            else if (Tag.equals("WIFE")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+            	System.out.println(tag + " " + IndiTag);
+      		   WifeId=IndiTag;
+      		   Family[item].WifeId=WifeId;
+      		   
+      		  
+             
+            }
+    	      
+            else if (Tag.equals("CHIL")) 
+            {
+            	tag=info[1];
+            	IndiTag=info[2];
+//            	Family[item1] = new FamilyInfo();
+//      		    Family[item1].FamilyId=FamilyId;
+//      		    Family[item1].WifeId=IndiTag;
+            	
+            }
+           
+             
+
+        
+          if(Tag.equals("INDI") || Tag.equals("FAM"))
+          {
+        	  if( id!=null && indiFlag!=0){
+        		  //linkIndviduals[item] = id+" " +name+" " +sex+" " +birt+" " +fams+" " +famc;
+        		  indRecords[item]=new IndividualRecord(id,name,sex, birt, fams,famc);
+        		      	
+        		  item++;
+        		
+                  indiFlag = 0;
+           	      id = null;
+                  name=null;
+                  sex =null;
+                  birt=null;
+                  famc=null;
+                  fams=null;  
+        	  } else item=0;
+        	  id = info[1];
+          }
+          
+          if(Tag.equals("FAM")){
+       	     FamilyId = info[1];
+       	     Family[item1]=new FamilyInfo();
+       	     Family[item1].FamilyId=FamilyId;
+       	  item1++;
+       	     
+       	  
+       	  
+          }
+        }
+	      fis.close();
+	      dis.close();
+	   	  
+	      printIndividuals();
+	      System.out.println("###########################");
+	      printFamilies();
+	      
+	  }
+	  
+	  private static void printIndividuals(){
+//	        for (int i=0; i<linkIndviduals.length && linkIndviduals[i] != null; i++){
+//	          String[] info = linkIndviduals[i].split(" ");
+//	          System.out.println(info[1] + " " + info[2]);
+		  for (int i=0; i<indRecords.length && indRecords[i] != null; i++){
+	         
+	          System.out.println(indRecords[i].Name + " " + indRecords[i].Id);
+	        }
+	  }
+  
+	  private static void printFamilies(){
+	        for (int i=0; i<Family.length && Family[i].HusbandId!=null ; i++){
+	        	System.out.println(Family[i].toString());
+	       for (int j=0;j<indRecords.length ;j++){
+	    	   System.out.println(indRecords[j].toString());
+	          if(Family[i].HusbandId==indRecords[j].Id){
+	    	        	System.out.println("The husband's Name for " + Family[i].FamilyId + " : "+indRecords[j].Name);
+	        	  }
+	        }
+	       }
+	       for (int i=0; i<Family.length && Family[i].WifeId!=null ; i++){
+		       for (int j=0;j<indRecords.length ;j++)		    	   
+		          if(Family[i].WifeId==indRecords[j].Id){
+		    	        	System.out.println("The Wife's Name for " + Family[i].FamilyId + " : "+indRecords[j].Name);
+		        	  }
+	         
+	          }
+	        }
+
+} 
+
+	  

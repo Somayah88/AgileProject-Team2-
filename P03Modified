@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +33,10 @@ class IndividualRecord {
 class FamilyInfo{
 	String FamilyId;
 	String HusbandId;
-	String WifeId;
-	List <String> ChlidrenIds;
+	//List <String> WifeId = new List<String>();
+	ArrayList<String> WifeId = new ArrayList<String>();
+	ArrayList<String> ChlidrenIds = new ArrayList<String>();
+	//List <String> ChlidrenIds;
 	
 //	public FamilyInfo (String familyId, String husbandId, String wifeId)
 //	{
@@ -50,6 +53,7 @@ public class P03  {
   
     private  static IndividualRecord[] indRecords;
     private static FamilyInfo [] Family; 
+    private static int item1=-1;
     
     
 
@@ -64,14 +68,14 @@ public class P03  {
 		    
 		    
 		    
-	    	FileInputStream  fis = new FileInputStream("FamilyTreeP.ged");
+	    	FileInputStream  fis = new FileInputStream("/Users/hadoola/P03/src/FamilyTreeP.ged");
     	    DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
     	    
             String Line;
             String name=null,sex = null,famc=null,fams=null, id=null;
             String FamilyId=null, tag=null, IndiTag=null;
-            String birt=null, WifeId=null,HusbId=null;
-	        int indiFlag=0, item=0, item1=0;
+            String birt=null;
+	        int indiFlag=0, item=0;
 	        
             while (dis.available() != 0)
             {
@@ -124,7 +128,7 @@ public class P03  {
             	System.out.println(tag + " " + IndiTag);
             	
 //      		     HusbId=IndiTag;
-//      		     Family[item].HusbandId=HusbId;
+    		     Family[item1].HusbandId = IndiTag;
       		     
       	 
             }
@@ -134,16 +138,16 @@ public class P03  {
             	IndiTag=info[2];
             	System.out.println(tag + " " + IndiTag);
 //      		   WifeId=IndiTag;
-//      		   Family[item].WifeId=WifeId;
-      		   
-      		  
-             
+      		    Family[item1].WifeId.add(IndiTag);
+            
             }
     	      
             else if (Tag.equals("CHIL")) 
             {
             	tag=info[1];
             	IndiTag=info[2];
+            	System.out.println(tag + " " + IndiTag);
+            	Family[item1].ChlidrenIds.add(IndiTag);
 //            	Family[item1] = new FamilyInfo();
 //      		    Family[item1].FamilyId=FamilyId;
 //      		    Family[item1].WifeId=IndiTag;
@@ -173,10 +177,21 @@ public class P03  {
           }
           
           if(Tag.equals("FAM")){
+        	 tag=null;
+        	 IndiTag=null;
        	     FamilyId = info[1];
-//       	     Family[item1]=new FamilyInfo();
+       	     /*if(item1>=0)
+       	    	for(int i=0; i<Family[item1].WifeId.size(); i++){
+       	           System.out.println(Family[item1].FamilyId+", husband "+Family[item1].HusbandId+", wife "+Family[item1].WifeId.get(i)); 
+          	    	for(int c=0; c<Family[item1].ChlidrenIds.size(); c++){
+            	           System.out.println(", with child "+Family[item1].ChlidrenIds.get(c)); 
+            	    	}
+       	    	}*/
+       	      item1++;
+    	     Family[item1]=new FamilyInfo();
+    	     Family[item1].FamilyId = FamilyId;
 //       	     Family[item1].FamilyId=FamilyId;
-       	  item1++;
+       	     //item1++;
        	     
        	  
        	  
@@ -187,7 +202,7 @@ public class P03  {
 	   	  
 	      printIndividuals();
 	      System.out.println("###########################");
-	     // printFamilies();
+	      printFamilies();
 	      
 	  }
 	  
@@ -201,7 +216,7 @@ public class P03  {
 	        }
 	  }
   
-	  private static void printFamilies(){
+	 /* private static void printFamilies(){
 	        for (int i=0; i<Family.length && Family[i].HusbandId!=null ; i++){
 	        	System.out.println(Family[i].toString());
 	       for (int j=0;j<indRecords.length ;j++){
@@ -218,8 +233,18 @@ public class P03  {
 		        	  }
 	         
 	          }
-	        }
-
+	        }*/
+ 
+	  private static void printFamilies(){
+		System.out.println(item1);
+	   for(int count = 0; count <=item1; count++)
+	    for(int i=0; i<Family[count].WifeId.size(); i++){
+	           System.out.println(Family[count].FamilyId+", husband "+Family[count].HusbandId+", wife "+Family[count].WifeId.get(i)); 
+ 	    	for(int c=0; c<Family[count].ChlidrenIds.size(); c++){
+   	           System.out.println(", with child "+Family[count].ChlidrenIds.get(c)); 
+   	    	}
+	    }
+	  }
 } 
 
 	  

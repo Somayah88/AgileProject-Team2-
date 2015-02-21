@@ -123,8 +123,8 @@ public class P03  {
             	IndiTag=info[2];
             	System.out.println(tag + " " + IndiTag);
             	
-      		     HusbId=IndiTag;
-      		     Family[item].HusbandId=HusbId;
+//      		     HusbId=IndiTag;
+//      		     Family[item].HusbandId=HusbId;
       		     
       	 
             }
@@ -133,8 +133,8 @@ public class P03  {
             	tag=info[1];
             	IndiTag=info[2];
             	System.out.println(tag + " " + IndiTag);
-      		   WifeId=IndiTag;
-      		   Family[item].WifeId=WifeId;
+//      		   WifeId=IndiTag;
+//      		   Family[item].WifeId=WifeId;
       		   
       		  
              
@@ -174,8 +174,8 @@ public class P03  {
           
           if(Tag.equals("FAM")){
        	     FamilyId = info[1];
-       	     Family[item1]=new FamilyInfo();
-       	     Family[item1].FamilyId=FamilyId;
+//       	     Family[item1]=new FamilyInfo();
+//       	     Family[item1].FamilyId=FamilyId;
        	  item1++;
        	     
        	  
@@ -187,7 +187,7 @@ public class P03  {
 	   	  
 	      printIndividuals();
 	      System.out.println("###########################");
-	      printFamilies();
+	     // printFamilies();
 	      
 	  }
 	  

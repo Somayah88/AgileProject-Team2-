@@ -116,6 +116,7 @@ public class GEDCOM {
 		
 		CheckDeathbeforeBirth ();
 
+                CheckHusbandIsMale();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {

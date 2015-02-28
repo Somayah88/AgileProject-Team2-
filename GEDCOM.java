@@ -211,11 +211,22 @@ public class GEDCOM {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-
 		}
-			
-		
-		
+	}
+	
+	private static void CheckHusbandIsMale() {
+		String HusbandId;
+		for(int i=0; i< Family.length && i<= item1; i++){
+			HusbandId = Family[i].HusbandId;
+			for(int l=0; l< indRecords.length; l++){
+		       if(indRecords[l].Id.equals(HusbandId)){
+		    	   if(! indRecords[l].SEX.equalsIgnoreCase("M"))
+		    		   System.out.println("Family with "+Family[i].FamilyId+" has a husband "
+		    	                     +HusbandId+" , "+indRecords[l].Name+" , who isn't a male.");
+		    	   break;
+		       }
+		    }
+		}
 	}
 	
 }

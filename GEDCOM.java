@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.Date;
 class IndividualRecord {
 
 	String SEX, Id, BirthDate, FamS, FamC, Marr, husb, wife, Fam, Name;
-	String DeathDate;
+	String DeathDate, MarrDate;
 
 	public IndividualRecord(String id, String name, String sex,
 			String birthdate, String Fams, String Famc, String deathDate) {
@@ -18,6 +19,7 @@ class IndividualRecord {
 		this.FamS = Fams;
 		this.FamC = Famc;
 		this.DeathDate=deathDate;
+		//this.MarrDate=MarrD;
 
 	}
 
@@ -27,17 +29,17 @@ class FamilyInfo {
 	String FamilyId;
 	String HusbandId;
 	String MarriageDate;
-	ArrayList<String> WifeId = new ArrayList<String>();
+	String WifeId;
+	//ArrayList<String> WifeId = new ArrayList<String>();
 	ArrayList<String> ChlidrenIds = new ArrayList<String>();
 }
-
 class ChildInfo {
 	String individualsID;
 	String FamilyID;
 	String name;
 	Date Birth = new Date();
 }
-
+/**************************************************/
 public class GEDCOM {
 
 	private static IndividualRecord[] indRecords;
@@ -45,7 +47,7 @@ public class GEDCOM {
 	private static int indiFlag = 0, item = 0, item1 = -1;
 	private static String IndiTag = null;
 	private static String name = null, sex = null, famc = null, fams = null,
-			id = null, birt = null, death=null;
+			id = null, birt = null, death=null, marr=null;
 	private static boolean DeathDateFlag=false, MarriageFlag=false, BirtDateFlag=false;
 	static SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
 
@@ -54,7 +56,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("My-Family.ged");
+		FileInputStream fis = new FileInputStream("My-FamilyTest.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		String Line, FamilyId = null;
 //*************** Reading the GEDCOM File****************************
@@ -70,14 +72,14 @@ public class GEDCOM {
 					break;
 				}
 			}
-
+//|| Tag.startsWith("D", 0)
 			if (Tag.startsWith("N", 0) || Tag.startsWith("S", 0)
-					|| Tag.startsWith("D", 0) || Tag.startsWith("F", 0) ||Tag.startsWith("B", 0)) {
+					 || Tag.startsWith("F", 0) ||Tag.startsWith("B", 0)) {
 				CheckIndivduals(Tag, info);
 			}
 
 			if (Tag.startsWith("H", 0) || Tag.startsWith("W", 0)
-					|| Tag.startsWith("C", 0)|| Tag.startsWith("M",0)) {
+					|| Tag.startsWith("C", 0)) {
 				CheckFamilyMember(Tag, info);
 			}
 	 
@@ -97,6 +99,7 @@ public class GEDCOM {
 					death=null;
 					DeathDateFlag=false;
 					MarriageFlag=false;
+					marr=null;
 				} else
 					item = 0;
 				id = info[1];
@@ -110,6 +113,21 @@ public class GEDCOM {
 				Family[item1].FamilyId = FamilyId;
 
 			}
+			 if (Tag.equals("MARR"))
+				MarriageFlag=true;
+			if (Tag.equals("DEAT"))
+			{
+				 DeathDateFlag=true;
+				
+			}
+			if (Tag.equals("BIRT"))
+			{
+				BirtDateFlag=true;
+			}
+			if (Tag.equals("DATE"))	
+			{
+				parseDtates(Tag, info);
+			}
 			
 			
 		}
@@ -118,19 +136,21 @@ public class GEDCOM {
 //**********End Of Reading ******************************//
 		printIndividuals();
 		System.out.println("###########################");
-		printFamilies();
+		//printFamilies();
 		System.out.println("###########################");
-		
-		CheckDeathbeforeBirth ();
 
-                try {
-			printOrderSiblingsLsit();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-                CheckHusbandIsMale();
+		CheckDeathbeforeBirth ();
+		CheckDeathbeforeMarriage();
+		 try {
+				printOrderSiblingsLsit();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			
+	                CheckHusbandIsMale();
+
+
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -140,10 +160,7 @@ public class GEDCOM {
 		} else if (Tag.equals("SEX")) {
 			sex = info[2];
 			indiFlag++;
-		} else if (Tag.equals("DATE") && BirtDateFlag) {
-			birt = info[2]+" " + info[3] +" "+ info[4];
-			indiFlag++;
-			BirtDateFlag=false;
+		
 		} else if (Tag.equals("FAMS")) {
 			fams = info[2];
 			indiFlag++;
@@ -151,22 +168,7 @@ public class GEDCOM {
 			famc = info[2];
 			indiFlag++;
 		}
-		if (Tag.equals("DATE") && DeathDateFlag)
-		{
-			death=info[2]+" "+info[3]+" "+info[4];
-			DeathDateFlag=false;
-			
-		}
-		if (Tag.equals("DEAT"))
-		{
-			 DeathDateFlag=true;
-			
-		}
-		if (Tag.equals("BIRT"))
-		{
-			BirtDateFlag=true;
-		}
-	
+		
 		
 		
 	}
@@ -177,28 +179,49 @@ public class GEDCOM {
 			Family[item1].HusbandId = IndiTag;
 		} else if (Tag.equals("WIFE")) {
 			IndiTag = info[2];
-			Family[item1].WifeId.add(IndiTag);
+			//Family[item1].WifeId.add(IndiTag);
+			Family[item1].WifeId=IndiTag;
+
 		}
 
 		else if (Tag.equals("CHIL")) {
 			IndiTag = info[2];
 			Family[item1].ChlidrenIds.add(IndiTag);
 		}
-		else if (Tag.equals("MARR"))
-			MarriageFlag=true;
-			
+		
 		
 			
+	}//Tag.equals("DATE") &&
+	private static void parseDtates (String Tag, String[] info){
+		 if ( BirtDateFlag) {
+				birt = info[2]+" " + info[3] +" "+ info[4];
+				indiFlag++;
+				BirtDateFlag=false;
+		 }
+		if ( MarriageFlag)
+		{
+			marr=info[2]+" "+info[3]+" "+info[4];
+			Family[item1].MarriageDate=marr;
+			MarriageFlag=false;
+			
+		}
+		if ( DeathDateFlag)
+		{
+			death=info[2]+" "+info[3]+" "+info[4];
+			DeathDateFlag=false;
+			
+		}
+		
 	}
 
 	private static void printIndividuals() {
 		for (int i = 0; i < indRecords.length && indRecords[i] != null; i++) {
 
-			System.out.println(indRecords[i].Name + " " + indRecords[i].Id+ " Birth Date= "+indRecords[i].BirthDate+"  Death Date="+ indRecords[i].DeathDate);
+			System.out.println(indRecords[i].Name + " " + indRecords[i].Id+ " Birth Date= "+indRecords[i].BirthDate+"  Death Date="+ indRecords[i].DeathDate+" ");
 		}
 	}
 
-	private static void printFamilies() {
+	/*private static void printFamilies() {
 		for (int count = 0; count <= item1; count++)
 			for (int i = 0; i < Family[count].WifeId.size(); i++) {
 				System.out.println(Family[count].FamilyId + ", husband "
@@ -209,10 +232,10 @@ public class GEDCOM {
 							+ Family[count].ChlidrenIds.get(c));
 				}
 			}
-	}
+	}*/
 	
 	private static void CheckDeathbeforeBirth (){
-		for (int i=0; i<indRecords.length ; i++)
+		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)
 		{ if (indRecords[i].BirthDate != null && indRecords[i].DeathDate!=null)
 			try {
 				 
@@ -226,8 +249,41 @@ public class GEDCOM {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+
 		}
+		
+			
+		
+		
 	}
+	private static void CheckDeathbeforeMarriage ()
+	{
+		for (int i=0; i<indRecords.length && indRecords[i]!=null; i++)
+		{ 
+			if ( indRecords[i].DeathDate!=null)
+		{
+				for (int j=0;j<Family.length && Family[j]!=null  ;j++)
+				{ 
+			if (indRecords[i].Id.compareTo(Family[j].HusbandId)==0 || indRecords[i].Id.compareTo(Family[j].WifeId)==0 )
+			try {
+				System.out.println("***************");
+				Date Mdate = formatter.parse(Family[j].MarriageDate);
+				Date Ddate= formatter.parse(indRecords[i].DeathDate);
+				//System.out.print (Mdate +"  "+Ddate);
+			
+				if (Mdate.compareTo(Ddate)>0)
+				System.out.println(" Individual "+ indRecords[i].Id+" ("+indRecords[i].Name+") has death date("+ indRecords[i].DeathDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
+				
+		 
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}}
+
+	}
+			
+		}
+	
+}
 	
 	private static void printOrderSiblingsLsit() throws ParseException{
 		ChildInfo[] Children = new ChildInfo[indRecords.length];

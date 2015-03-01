@@ -31,6 +31,13 @@ class FamilyInfo {
 	ArrayList<String> ChlidrenIds = new ArrayList<String>();
 }
 
+class ChildInfo {
+	String individualsID;
+	String FamilyID;
+	String name;
+	Date Birth = new Date();
+}
+
 public class GEDCOM {
 
 	private static IndividualRecord[] indRecords;
@@ -116,6 +123,13 @@ public class GEDCOM {
 		
 		CheckDeathbeforeBirth ();
 
+                try {
+			printOrderSiblingsLsit();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
                 CheckHusbandIsMale();
 	}
 
@@ -213,6 +227,48 @@ public class GEDCOM {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private static void printOrderSiblingsLsit() throws ParseException{
+		ChildInfo[] Children = new ChildInfo[indRecords.length];
+		String[] OrderSiblings;
+		DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+		Date date = new Date(); 
+		int count = 0, ChildCount = 0;
+	    
+		System.out.println("Siblings are listed in order of their age in every family: ");
+		for(int i=0; i< Family.length  && i<= item1; i++){
+		  for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
+			Children[count] = new ChildInfo();
+			Children[count].individualsID = Family[i].ChlidrenIds.get(j);
+			Children[count].FamilyID = Family[i].FamilyId;
+		    for(int l=0; l< indRecords.length; l++)
+		    	if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
+		    		date = formatter.parse(indRecords[l].BirthDate);
+		    		Children[count].name = indRecords[l].Name;
+		    		break;
+		    	}
+		    Children[count].Birth = date;
+			count++;
+			ChildCount++;
+		  }
+	   }
+	   
+	   OrderSiblings = new String[ChildCount];
+	   for(int l=0; l< Children.length && l < ChildCount; l++){
+		 OrderSiblings[l] =  "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
+		 int num = l;
+		 if(num >= 1)
+		   if(Children[l].FamilyID.equals(Children[--num].FamilyID)){
+			  if(Children[l].Birth.before(Children[num].Birth)){
+				  String Name = "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
+				  OrderSiblings[num] =  Name;
+				  OrderSiblings[l] = "Family " + Children[num].FamilyID + " has a child whose name is "+ Children[num].name;
+			  } 
+		   } 
+	   }
+	   for(int o=0; o<ChildCount; o++)
+		   System.out.println(OrderSiblings[o]);
 	}
 	
 	private static void CheckHusbandIsMale() {

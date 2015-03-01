@@ -288,7 +288,7 @@ public class GEDCOM {
 	private static void printOrderSiblingsLsit() throws ParseException{
 		ChildInfo[] Children = new ChildInfo[indRecords.length];
 		String[] OrderSiblings;
-		DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+		//DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 		Date date = new Date(); 
 		int count = 0, ChildCount = 0;
 	    

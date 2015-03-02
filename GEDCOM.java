@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,6 +30,7 @@ class FamilyInfo {
 	String FamilyId;
 	String HusbandId;
 	String MarriageDate;
+	String DivorseDate;
 	String WifeId;
 	//ArrayList<String> WifeId = new ArrayList<String>();
 	ArrayList<String> ChlidrenIds = new ArrayList<String>();
@@ -48,7 +50,7 @@ public class GEDCOM {
 	private static String IndiTag = null;
 	private static String name = null, sex = null, famc = null, fams = null,
 			id = null, birt = null, death=null, marr=null;
-	private static boolean DeathDateFlag=false, MarriageFlag=false, BirtDateFlag=false;
+	private static boolean DeathDateFlag=false, MarriageFlag=false, BirtDateFlag=false, Divorseflag=false;
 	static SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
 
 	@SuppressWarnings("deprecation")
@@ -56,7 +58,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("My-FamilyTest.ged");
+		FileInputStream fis = new FileInputStream("E:/Workspace/555proj/src/WifeTest.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		String Line, FamilyId = null;
 //*************** Reading the GEDCOM File****************************
@@ -99,6 +101,7 @@ public class GEDCOM {
 					death=null;
 					DeathDateFlag=false;
 					MarriageFlag=false;
+					Divorseflag=false;
 					marr=null;
 				} else
 					item = 0;
@@ -123,6 +126,11 @@ public class GEDCOM {
 			if (Tag.equals("BIRT"))
 			{
 				BirtDateFlag=true;
+			}
+			if (Tag.equals("DIV"))
+			{
+				 Divorseflag=true;
+				
 			}
 			if (Tag.equals("DATE"))	
 			{
@@ -149,6 +157,8 @@ public class GEDCOM {
 			} 
 			
 	                CheckHusbandIsMale();
+	                CheckWifeFemale();
+	                CheckDivorseAfterToday();
 
 
 	}
@@ -209,6 +219,12 @@ public class GEDCOM {
 		{
 			death=info[2]+" "+info[3]+" "+info[4];
 			DeathDateFlag=false;
+			
+		}
+		if ( Divorseflag)
+		{
+			Family[item1].DivorseDate=info[2]+" "+info[3]+" "+info[4];
+			Divorseflag=false;
 			
 		}
 		
@@ -327,6 +343,7 @@ public class GEDCOM {
 		   System.out.println(OrderSiblings[o]);
 	}
 	
+	
 	private static void CheckHusbandIsMale() {
 		String HusbandId;
 		for(int i=0; i< Family.length && i<= item1; i++){
@@ -342,4 +359,56 @@ public class GEDCOM {
 		}
 	}
 	
-}
+	private static void CheckDivorseAfterToday ()
+	{
+		int i;
+		System.out.println("\n********************Check for Divorse date after current date******************");
+		//DateFormat today = new SimpleDateFormat("dd/MMM/yyyy");
+		Date today = new Date();
+		//dateFormat.format(date);
+		for(i=0;i<Family.length && Family[i]!=null;i++)
+		{
+			try
+			{
+				if(Family[i].DivorseDate!=null)
+				{
+				Date Divdate = formatter.parse(Family[i].DivorseDate);
+					if(Divdate.after(today))
+					{
+						System.out.println("Error in file:The divorce date in Family " +Family[i].FamilyId+ " is not valid. The date is a future date");
+					}
+					
+				}
+			}
+			catch(ParseException e) {
+					e.printStackTrace();
+			}
+		}
+		
+	}	
+	//Check Wife is female
+	
+	public static void CheckWifeFemale(){
+		int i, j;
+		System.out.println("\n********************Check for Wife Gender******************");
+		for(i=0;i<Family.length && Family[i]!=null;i++)
+		{
+			for(j=0;j<indRecords.length && indRecords[j]!=null;j++)
+			{
+				//System.out.println (indRecords[j].Id+ Family[i].WifeId);
+				if(Family[i].WifeId.equals(indRecords[j].Id))
+				{
+					//System.out.println(indRecords[i].SEX);
+					if(!indRecords[i].SEX.equalsIgnoreCase("F"))
+					{
+						
+						System.out.println("Error in file: The wife in Family" +Family[i].FamilyId+ " , "+indRecords[j].Name+"is not female");
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	}

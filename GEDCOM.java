@@ -58,8 +58,9 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("E:/Workspace/555proj/src/WifeTest.ged");
+		FileInputStream fis = new FileInputStream("My-Family-11-Mar-2015-3.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
+		
 		String Line, FamilyId = null;
 //*************** Reading the GEDCOM File****************************
 		while (dis.available() != 0) {
@@ -159,6 +160,7 @@ public class GEDCOM {
 	                CheckHusbandIsMale();
 	                CheckWifeFemale();
 	                CheckDivorseAfterToday();
+	                CheckDivorceBeforeMarriage ();
 
 
 	}
@@ -410,5 +412,26 @@ public class GEDCOM {
 		
 	}
 	
-	
+	private static void CheckDivorceBeforeMarriage ()
+	{
+		
+				for (int j=0;j<Family.length && Family[j]!=null  ;j++)
+				{ 
+			if (Family[j].MarriageDate!=null && Family[j].DivorseDate!=null )
+			try {
+				System.out.println("***************");
+				Date Mdate = formatter.parse(Family[j].MarriageDate);
+				Date Ddate= formatter.parse(Family[j].DivorseDate);
+				//System.out.print (Mdate +"  "+Ddate);
+			
+				if (Mdate.compareTo(Ddate)>0)
+				
+				System.out.println(" Family "+ Family[j].FamilyId +"  has divorce date("+ Family[j].DivorseDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
+				
+				
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}}
+
+	}
 	}

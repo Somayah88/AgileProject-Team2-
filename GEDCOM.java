@@ -157,11 +157,13 @@ public class GEDCOM {
 				e.printStackTrace();
 			} 
 			
-	                CheckHusbandIsMale();
-	                CheckWifeFemale();
-	                CheckDivorseAfterToday();
-	                CheckDivorceBeforeMarriage ();
-
+	        CheckHusbandIsMale();
+	        CheckWifeFemale();
+	        CheckDivorseAfterToday();
+	        CheckDivorceBeforeMarriage ();
+		
+		CheckChildBirthBeforeParent();
+		PrintMalesAndFemales();
 
 	}
 
@@ -434,4 +436,83 @@ public class GEDCOM {
 			}}
 
 	}
+	
+	private static void CheckChildBirthBeforeParent() {
+		ArrayList<Date> ChildrenBirthDates = new ArrayList<Date>();
+		Date HusbandBirthDate = new Date();
+		Date WifeBirthDate = new Date();
+
+		System.out.println("\n*****************Check for Children Birthdates < Parents' Birthdates***************");
+		for (int i = 0; i < Family.length && Family[i] != null; i++) {
+			String HusbId = Family[i].HusbandId;
+			String WifeId = Family[i].WifeId;
+			ArrayList<String> FamilyChildrenIds = Family[i].ChlidrenIds;
+			
+			for (int j = 0; j < indRecords.length && indRecords[j] != null; j++) {
+					if (indRecords[j].Id.equalsIgnoreCase(HusbId)) {
+					   try { 
+							HusbandBirthDate = formatter
+									.parse(indRecords[j].BirthDate);
+							HusbId = "";
+						}catch (ParseException e) {
+								e.printStackTrace();
+						}						
+					} else if (indRecords[j].Id.equalsIgnoreCase(WifeId)) {
+					  try { 
+						WifeBirthDate = formatter
+								.parse(indRecords[j].BirthDate);
+						WifeId = "";
+					  }catch (ParseException e) {
+							e.printStackTrace();
+					  }
+				    } 
+			 }
+			
+			for (int c = 0; c < FamilyChildrenIds.size(); c++)
+				for (int k = 0; k < indRecords.length && indRecords[k] != null; k++) {
+					try {
+						if (indRecords[k].Id.equalsIgnoreCase(FamilyChildrenIds.get(c))) {
+							ChildrenBirthDates.add(c, formatter
+									.parse(indRecords[k].BirthDate));
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+			FamilyChildrenIds.clear();
+			
+            System.out.println(HusbandBirthDate.toString());
+            System.out.println(WifeBirthDate.toString() );   
+            System.out.println("ChildrenBirthDates  " + ChildrenBirthDates.size()); 
+            
+			for (int c = 0; c < ChildrenBirthDates.size(); c++) {
+				System.out.println(ChildrenBirthDates.get(c));
+				if (ChildrenBirthDates.get(c).compareTo(HusbandBirthDate) < 0
+						|| ChildrenBirthDates.get(c).compareTo(WifeBirthDate) < 0)
+					System.out.println("Error in file: There is a child who has a birthdate which is greater than the parents'");
+			}
+			System.out.println("\n");			
+		}
 	}
+	
+	private static void PrintMalesAndFemales() {
+		ArrayList<String> Males = new ArrayList<String>();
+		ArrayList<String> Females = new ArrayList<String>();		
+		System.out.println("\n*****************Print Females and Males***************");
+		
+		for (int i = 0; i < indRecords.length && indRecords[i] != null; i++) {
+			if(indRecords[i].SEX.equalsIgnoreCase("M"))
+				Males.add(indRecords[i].Name);
+			else if(indRecords[i].SEX.equalsIgnoreCase("F"))
+				Females.add(indRecords[i].Name);
+		}
+		
+		System.out.println("\nThe Males in this family are: ");
+		for (int j = 0; j < Males.size() ; j++) 
+			System.out.println(Males.get(j));
+		
+		System.out.println("\nThe Females in this family are: ");
+		for (int k = 0; k < Females.size() ; k++) 
+			System.out.println(Females.get(k));		
+	}
+}

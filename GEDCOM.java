@@ -1,6 +1,8 @@
 
-import java.io.*;
-import java.text.DateFormat;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -164,6 +166,12 @@ public class GEDCOM {
 		
 		CheckChildBirthBeforeParent();
 		PrintMalesAndFemales();
+		try {
+			PrintBasedOnBirthMonth();
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
 
 	}
 
@@ -515,4 +523,54 @@ public class GEDCOM {
 		for (int k = 0; k < Females.size() ; k++) 
 			System.out.println(Females.get(k));		
 	}
+	private static void PrintBasedOnBirthMonth() throws ParseException  {
+
+		System.out.println("********** Print Based On BirthMonth*********");
+		Date Dat1;
+		Date Dat2 ;
+		int Month1, Month2;
+		IndividualRecord temp;
+		IndividualRecord[] indRec= new IndividualRecord[indRecords.length];
+		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)
+		{
+			indRec[i]=indRecords[i];
+		}
+
+		int C=0;
+
+		while (C<indRec.length){
+
+			if (indRec[C]!=null){
+				if ( indRec[C].BirthDate!=null)
+				{
+					for (int j=C+1; j<indRec.length &&indRec[j]!=null ;j++)
+					{if (indRec[j].BirthDate!=null)
+					{
+						Dat1=formatter.parse(indRec[C].BirthDate);
+						Month1=Dat1.getMonth();
+
+						Dat2=formatter.parse(indRec[j].BirthDate);
+						Month2=Dat2.getMonth();
+
+
+						if (Month1>Month2)
+						{
+							temp=indRec[j];
+							indRec[j]=indRec[C];
+							indRec[C]=temp;
+
+						}
+
+					}}
+
+
+				}}
+			C++;}
+
+		for (int k=0; k<indRec.length&& indRec[k]!=null; k++)
+
+			System.out.println(indRec[k].Name);
+	}
 }
+
+

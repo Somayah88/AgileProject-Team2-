@@ -529,6 +529,27 @@ public class GEDCOM {
 		Date Dat1;
 		Date Dat2 ;
 		int Month1, Month2;
+		System.out.println("********** Print Based On BirthMonth*********");
+		Date Dat1;
+		Date Dat2 ;
+		int Month1, Month2;
+		String [] months={"January", "February", "March", "Aprl","May", "June", "July","Augest","September","October","November","December"};
+		int flag=0;
+		for (int i=0;i<11;i++)
+			{System.out.println ("Individuals who were born on "+months[i]);
+			for (int j=0;j<indRecords.length && indRecords[j]!=null;j++)
+			{
+				Dat1=formatter.parse(indRecords[j].BirthDate);
+				Month1=Dat1.getMonth();
+				if(Month1==i)
+					{System.out.println(indRecords[j].Name);
+					flag=1;
+					}
+			}	
+			if (flag==0)
+				System.out.println("No individuals were born in this month");
+			}
+		System.out.println("*****************************");
 		IndividualRecord temp;
 		IndividualRecord[] indRec= new IndividualRecord[indRecords.length];
 		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)

@@ -488,18 +488,12 @@ public class GEDCOM {
 					}
 				}
 			FamilyChildrenIds.clear();
-			
-            System.out.println(HusbandBirthDate.toString());
-            System.out.println(WifeBirthDate.toString() );   
-            System.out.println("ChildrenBirthDates  " + ChildrenBirthDates.size()); 
             
 			for (int c = 0; c < ChildrenBirthDates.size(); c++) {
-				System.out.println(ChildrenBirthDates.get(c));
 				if (ChildrenBirthDates.get(c).compareTo(HusbandBirthDate) < 0
 						|| ChildrenBirthDates.get(c).compareTo(WifeBirthDate) < 0)
-					System.out.println("Error in file: There is a child who has a birthdate which is greater than the parents'");
-			}
-			System.out.println("\n");			
+					System.out.println("Error in file: There is a child in family " + Family[i].FamilyId + " who has a birthdate which is greater than the parents'");
+			}		
 		}
 	}
 	

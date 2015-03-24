@@ -1,17 +1,20 @@
-
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 class IndividualRecord {
 
 	String SEX, Id, BirthDate, FamS, FamC, Marr, husb, wife, Fam, Name;
 	String DeathDate, MarrDate;
+	int age;
 
 	public IndividualRecord(String id, String name, String sex,
 			String birthdate, String Fams, String Famc, String deathDate) {
@@ -22,11 +25,30 @@ class IndividualRecord {
 		this.FamS = Fams;
 		this.FamC = Famc;
 		this.DeathDate=deathDate;
-		//this.MarrDate=MarrD;
+		try {
+			age=setage();
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
 
 	}
-
+	public int setage() throws ParseException
+	{ 
+		
+		SimpleDateFormat formatter1 = new SimpleDateFormat("d MMM yyyy");
+		Date Bdate = formatter1.parse(BirthDate);
+		Calendar cal = Calendar.getInstance();
+		Date today = new Date();
+		Calendar cal1 = Calendar.getInstance();
+		cal.setTime(Bdate);
+		cal1.setTime(today);
+		 age = cal1.get(Calendar.YEAR)-cal.get(Calendar.YEAR);
+		 System.out.println(age);
+		 return age;
+	}
 }
+
 
 class FamilyInfo {
 	String FamilyId;
@@ -60,7 +82,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("My-Family-11-Mar-2015-3.ged");
+		FileInputStream fis = new FileInputStream("E:/Workspace/555proj/src/FamilyTree.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		
 		String Line, FamilyId = null;
@@ -172,7 +194,8 @@ public class GEDCOM {
 			
 			e.printStackTrace();
 		}
-
+		 SortByAge();
+         CheckAgeLimit();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -524,9 +547,6 @@ public class GEDCOM {
 		Date Dat2 ;
 		int Month1, Month2;
 		System.out.println("********** Print Based On BirthMonth*********");
-		Date Dat1;
-		Date Dat2 ;
-		int Month1, Month2;
 		String [] months={"January", "February", "March", "Aprl","May", "June", "July","Augest","September","October","November","December"};
 		int flag=0;
 		for (int i=0;i<11;i++)
@@ -586,6 +606,45 @@ public class GEDCOM {
 
 			System.out.println(indRec[k].Name);
 	}
+	public static void SortByAge()
+	{
+		int i,j,n, count=0;
+		IndividualRecord swap;
+		n=indRecords.length;
+		System.out.println("\n Individuals sorted according to Age");
+		for (i=0; i<n && indRecords[i]!=null ; i++)
+		{
+			count++;
+		}
+		
+		for (i=0;indRecords[i]!=null ; i++) {
+		      for (j = 0; j < count - i - 1; j++) {
+		        if (indRecords[j].age > indRecords[j+1].age) 
+		        {
+		          swap       = indRecords[j];
+		          indRecords[j]   = indRecords[j+1];
+		          indRecords[j+1] = swap;
+		        }
+		      }
+		    } 
+		
+		for (i=0; i<n && indRecords[i]!=null ; i++)
+		{
+			System.out.println("Name : "+indRecords[i].Name+"\n Age : "+ indRecords[i].age+"\n");
+		}
+		
+	}
+	public static void CheckAgeLimit()
+	{ 
+		int i;
+		System.out.println("\n Check Age");
+		for (i=0; i<indRecords.length && indRecords[i]!=null ; i++)
+		{
+			if(indRecords[i].age>150 && indRecords[i].DeathDate==null)
+			{
+				System.out.println("The individual "+indRecords[i].Name+"has age beyond 150");
+			}
+		}
+	}
 }
-
 

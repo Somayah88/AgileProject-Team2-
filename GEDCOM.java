@@ -82,7 +82,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("E:/Workspace/555proj/src/FamilyTree.ged");
+		FileInputStream fis = new FileInputStream("My-Family-S02.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		
 		String Line, FamilyId = null;
@@ -446,13 +446,13 @@ public class GEDCOM {
 	}
 	
 	private static void CheckDivorceBeforeMarriage ()
-	{
+	{ 	System.out.println("********** Divorce Before Marriage*********");
 		
 				for (int j=0;j<Family.length && Family[j]!=null  ;j++)
 				{ 
 			if (Family[j].MarriageDate!=null && Family[j].DivorseDate!=null )
 			try {
-				System.out.println("***************");
+			
 				Date Mdate = formatter.parse(Family[j].MarriageDate);
 				Date Ddate= formatter.parse(Family[j].DivorseDate);
 				//System.out.print (Mdate +"  "+Ddate);
@@ -542,15 +542,17 @@ public class GEDCOM {
 	}
 	private static void PrintBasedOnBirthMonth() throws ParseException  {
 
-		System.out.println("********** Print Based On BirthMonth*********");
+		
 		Date Dat1;
-		Date Dat2 ;
-		int Month1, Month2;
+		
+		int Month1;
+		
 		System.out.println("********** Print Based On BirthMonth*********");
 		String [] months={"January", "February", "March", "Aprl","May", "June", "July","Augest","September","October","November","December"};
 		int flag=0;
 		for (int i=0;i<11;i++)
 			{System.out.println ("Individuals who were born on "+months[i]);
+			flag=0;
 			for (int j=0;j<indRecords.length && indRecords[j]!=null;j++)
 			{
 				Dat1=formatter.parse(indRecords[j].BirthDate);
@@ -561,10 +563,11 @@ public class GEDCOM {
 					}
 			}	
 			if (flag==0)
-				System.out.println("No individuals were born in this month");
+				System.out.println("None");
 			}
 		System.out.println("*****************************");
-		IndividualRecord temp;
+	}
+		/*IndividualRecord temp;
 		IndividualRecord[] indRec= new IndividualRecord[indRecords.length];
 		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)
 		{
@@ -605,7 +608,8 @@ public class GEDCOM {
 		for (int k=0; k<indRec.length&& indRec[k]!=null; k++)
 
 			System.out.println(indRec[k].Name);
-	}
+	}*/
+
 	public static void SortByAge()
 	{
 		int i,j,n, count=0;

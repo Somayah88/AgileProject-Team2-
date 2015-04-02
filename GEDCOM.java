@@ -194,8 +194,11 @@ public class GEDCOM {
 			
 			e.printStackTrace();
 		}
-		 SortByAge();
-         CheckAgeLimit();
+		SortByAge();
+                CheckAgeLimit();
+                
+                CheckMarriageBeforeBirth();
+		PrintFamiliesChildren();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -510,7 +513,7 @@ public class GEDCOM {
 						e.printStackTrace();
 					}
 				}
-			FamilyChildrenIds.clear();
+			//FamilyChildrenIds.clear();
             
 			for (int c = 0; c < ChildrenBirthDates.size(); c++) {
 				if (ChildrenBirthDates.get(c).compareTo(HusbandBirthDate) < 0
@@ -648,6 +651,52 @@ public class GEDCOM {
 			{
 				System.out.println("The individual "+indRecords[i].Name+"has age beyond 150");
 			}
+		}
+	}
+	
+	private static void CheckMarriageBeforeBirth() {
+		System.out.println("\n*****************Check Parent's Marriage not Before their Birth Dates***************");
+		    Date HusbandBirth = new Date();
+		    Date WifeBirth = new Date();
+		    Date MarriageDate = new Date();
+		    for (int j=0; j< Family.length && Family[j]!= null; j++) { 
+			  if (Family[j].MarriageDate != null ){
+				try {
+					for (int i = 0; i < indRecords.length	&& indRecords[i] != null; i++) {
+						if (indRecords[i].Id.equalsIgnoreCase(Family[j].HusbandId))
+							HusbandBirth = formatter
+									.parse(indRecords[i].BirthDate);
+						else if (indRecords[i].Id.equalsIgnoreCase(Family[j].WifeId))
+							WifeBirth = formatter
+									.parse(indRecords[i].BirthDate);
+					}
+					MarriageDate = formatter.parse(Family[j].MarriageDate);
+
+					if (HusbandBirth.compareTo(MarriageDate) > 0)
+						System.out.println("Parents in the Family "
+								+ Family[j].FamilyId + "  has marriage date("
+								+ Family[j].MarriageDate
+								+ ") before their Birth date. ");
+					else if (WifeBirth.compareTo(MarriageDate) > 0)
+						System.out.println("Parents in the Family "
+								+ Family[j].FamilyId + "  has marriage date("
+								+ Family[j].MarriageDate
+								+ ") before their Birth date. ");
+
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+		    }
+		  }
+	 }
+	
+	private static void PrintFamiliesChildren() {
+		System.out.println("\n*****************Print Families' Children***************");
+		for (int i = 0; i < Family.length && Family[i] != null; i++){
+		   if(Family[i].ChlidrenIds.size() > 0)
+		     System.out.println("Family's " + Family[i].FamilyId + " Children: ");
+		   for (int c = 0; c < Family[i].ChlidrenIds.size(); c++) 
+					System.out.println(Family[i].ChlidrenIds.get(c));
 		}
 	}
 }

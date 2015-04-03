@@ -28,14 +28,14 @@ class IndividualRecord {
 		try {
 			age=setage();
 		} catch (ParseException e) {
-			
+
 			e.printStackTrace();
 		}
 
 	}
 	public int setage() throws ParseException
 	{ 
-		
+
 		SimpleDateFormat formatter1 = new SimpleDateFormat("d MMM yyyy");
 		Date Bdate = formatter1.parse(BirthDate);
 		Calendar cal = Calendar.getInstance();
@@ -43,18 +43,18 @@ class IndividualRecord {
 		Calendar cal1 = Calendar.getInstance();
 		cal.setTime(Bdate);
 		cal1.setTime(today);
-		 age = cal1.get(Calendar.YEAR)-cal.get(Calendar.YEAR);
-		 int currMonth = cal1.get(Calendar.MONTH) + 1;
-	      int birthMonth = cal.get(Calendar.MONTH) + 1;
-	      int months = currMonth - birthMonth;
-	      if (months < 0)
-	    	age--;
-	      //else if (months == 0 && cal1.get(Calendar.DATE) < cal.get(Calendar.DATE))
-	        //age--;
-	      else if (months == 12)
-	        age++;
-		 System.out.println(age);
-		 return age;
+		age = cal1.get(Calendar.YEAR)-cal.get(Calendar.YEAR);
+		int currMonth = cal1.get(Calendar.MONTH) + 1;
+		int birthMonth = cal.get(Calendar.MONTH) + 1;
+		int months = currMonth - birthMonth;
+		if (months < 0)
+			age--;
+		//else if (months == 0 && cal1.get(Calendar.DATE) < cal.get(Calendar.DATE))
+		//age--;
+		else if (months == 12)
+			age++;
+		System.out.println(age);
+		return age;
 	}
 }
 
@@ -94,9 +94,9 @@ public class GEDCOM {
 
 		FileInputStream fis = new FileInputStream("Sprint03Test.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
-		
+
 		String Line, FamilyId = null;
-//*************** Reading the GEDCOM File****************************
+		//*************** Reading the GEDCOM File****************************
 		while (dis.available() != 0) {
 			Line = dis.readLine();
 
@@ -109,9 +109,9 @@ public class GEDCOM {
 					break;
 				}
 			}
-//|| Tag.startsWith("D", 0)
+			//|| Tag.startsWith("D", 0)
 			if (Tag.startsWith("N", 0) || Tag.startsWith("S", 0)
-					 || Tag.startsWith("F", 0) ||Tag.startsWith("B", 0)) {
+					|| Tag.startsWith("F", 0) ||Tag.startsWith("B", 0)) {
 				CheckIndivduals(Tag, info);
 			}
 
@@ -119,7 +119,7 @@ public class GEDCOM {
 					|| Tag.startsWith("C", 0)) {
 				CheckFamilyMember(Tag, info);
 			}
-	 
+
 
 			if (Tag.equals("INDI") || Tag.equals("FAM")) {
 				if (id != null && indiFlag != 0) {
@@ -151,12 +151,12 @@ public class GEDCOM {
 				Family[item1].FamilyId = FamilyId;
 
 			}
-			 if (Tag.equals("MARR"))
+			if (Tag.equals("MARR"))
 				MarriageFlag=true;
 			if (Tag.equals("DEAT"))
 			{
-				 DeathDateFlag=true;
-				
+				DeathDateFlag=true;
+
 			}
 			if (Tag.equals("BIRT"))
 			{
@@ -164,19 +164,19 @@ public class GEDCOM {
 			}
 			if (Tag.equals("DIV"))
 			{
-				 Divorseflag=true;
-				
+				Divorseflag=true;
+
 			}
 			if (Tag.equals("DATE"))	
 			{
 				parseDtates(Tag, info);
 			}
-			
-			
+
+
 		}
 		fis.close();
 		dis.close();
-//**********End Of Reading ******************************//
+		//**********End Of Reading ******************************//
 		printIndividuals();
 		System.out.println("###########################");
 		//printFamilies();
@@ -184,36 +184,36 @@ public class GEDCOM {
 
 		CheckDeathbeforeBirth ();
 		CheckDeathbeforeMarriage();
-		 try {
-				printOrderSiblingsLsit();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-			
-	        CheckHusbandIsMale();
-	        CheckWifeFemale();
-	        CheckDivorseAfterToday();
-	        CheckDivorceBeforeMarriage ();
-		
+		try {
+			printOrderSiblingsLsit();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+		CheckHusbandIsMale();
+		CheckWifeFemale();
+		CheckDivorseAfterToday();
+		CheckDivorceBeforeMarriage ();
+
 		CheckChildBirthBeforeParent();
 		PrintMalesAndFemales();
 		try {
 			PrintBasedOnBirthMonth();
 		} catch (ParseException e) {
-			
+
 			e.printStackTrace();
 		}
 		SortByAge();
-                CheckAgeLimit();
-                
-                CheckMarriageBeforeBirth();
+		CheckAgeLimit();
+
+		CheckMarriageBeforeBirth();
 		PrintFamiliesChildren();
 		ListSiblingAgeDiff();
 		CheckSiblingMarriage();
 		below14Marriage();
 		deathNotAfterCurrDate ();
-		
+
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -223,7 +223,7 @@ public class GEDCOM {
 		} else if (Tag.equals("SEX")) {
 			sex = info[2];
 			indiFlag++;
-		
+
 		} else if (Tag.equals("FAMS")) {
 			fams = info[2];
 			indiFlag++;
@@ -231,9 +231,9 @@ public class GEDCOM {
 			famc = info[2];
 			indiFlag++;
 		}
-		
-		
-		
+
+
+
 	}
 
 	private static void CheckFamilyMember(String Tag, String[] info) {
@@ -251,36 +251,36 @@ public class GEDCOM {
 			IndiTag = info[2];
 			Family[item1].ChlidrenIds.add(IndiTag);
 		}
-		
-		
-			
+
+
+
 	}//Tag.equals("DATE") &&
 	private static void parseDtates (String Tag, String[] info){
-		 if ( BirtDateFlag) {
-				birt = info[2]+" " + info[3] +" "+ info[4];
-				indiFlag++;
-				BirtDateFlag=false;
-		 }
+		if ( BirtDateFlag) {
+			birt = info[2]+" " + info[3] +" "+ info[4];
+			indiFlag++;
+			BirtDateFlag=false;
+		}
 		if ( MarriageFlag)
 		{
 			marr=info[2]+" "+info[3]+" "+info[4];
 			Family[item1].MarriageDate=marr;
 			MarriageFlag=false;
-			
+
 		}
 		if ( DeathDateFlag)
 		{
 			death=info[2]+" "+info[3]+" "+info[4];
 			DeathDateFlag=false;
-			
+
 		}
 		if ( Divorseflag)
 		{
 			Family[item1].DivorseDate=info[2]+" "+info[3]+" "+info[4];
 			Divorseflag=false;
-			
+
 		}
-		
+
 	}
 
 	private static void printIndividuals() {
@@ -302,116 +302,116 @@ public class GEDCOM {
 				}
 			}
 	}*/
-	
+
 	private static void CheckDeathbeforeBirth (){
 		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)
 		{ if (indRecords[i].BirthDate != null && indRecords[i].DeathDate!=null)
 			try {
-				 
+
 				Date Bdate = formatter.parse(indRecords[i].BirthDate);
 				Date Ddate= formatter.parse(indRecords[i].DeathDate);
-			
+
 				if (Bdate.compareTo(Ddate)>0)
-				System.out.println(" Individual "+ indRecords[i].Id+" ("+indRecords[i].Name+") has death date("+ indRecords[i].DeathDate+") before birth date ("+ indRecords[i].BirthDate+") " );
-				
-		 
+					System.out.println(" Individual "+ indRecords[i].Id+" ("+indRecords[i].Name+") has death date("+ indRecords[i].DeathDate+") before birth date ("+ indRecords[i].BirthDate+") " );
+
+
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 
 		}
-		
-			
-		
-		
+
+
+
+
 	}
 	private static void CheckDeathbeforeMarriage ()
 	{
 		for (int i=0; i<indRecords.length && indRecords[i]!=null; i++)
 		{ 
 			if ( indRecords[i].DeathDate!=null)
-		{
+			{
 				for (int j=0;j<Family.length && Family[j]!=null  ;j++)
 				{ 
-			if (indRecords[i].Id.compareTo(Family[j].HusbandId)==0 || indRecords[i].Id.compareTo(Family[j].WifeId)==0 )
-			try {
-				System.out.println("***************");
-				Date Mdate = formatter.parse(Family[j].MarriageDate);
-				Date Ddate= formatter.parse(indRecords[i].DeathDate);
-				//System.out.print (Mdate +"  "+Ddate);
-			
-				if (Mdate.compareTo(Ddate)>0)
-				System.out.println(" Individual "+ indRecords[i].Id+" ("+indRecords[i].Name+") has death date("+ indRecords[i].DeathDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
-				
-		 
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}}
+					if (indRecords[i].Id.compareTo(Family[j].HusbandId)==0 || indRecords[i].Id.compareTo(Family[j].WifeId)==0 )
+						try {
+							System.out.println("***************");
+							Date Mdate = formatter.parse(Family[j].MarriageDate);
+							Date Ddate= formatter.parse(indRecords[i].DeathDate);
+							//System.out.print (Mdate +"  "+Ddate);
+
+							if (Mdate.compareTo(Ddate)>0)
+								System.out.println(" Individual "+ indRecords[i].Id+" ("+indRecords[i].Name+") has death date("+ indRecords[i].DeathDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
+
+
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}}
+
+			}
+
+		}
 
 	}
-			
-		}
-	
-}
-	
+
 	private static void printOrderSiblingsLsit() throws ParseException{
 		ChildInfo[] Children = new ChildInfo[indRecords.length];
 		String[] OrderSiblings;
 		//DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
 		Date date = new Date(); 
 		int count = 0, ChildCount = 0;
-	    
+
 		System.out.println("Siblings are listed in order of their age in every family: ");
 		for(int i=0; i< Family.length  && i<= item1; i++){
-		  for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
-			Children[count] = new ChildInfo();
-			Children[count].individualsID = Family[i].ChlidrenIds.get(j);
-			Children[count].FamilyID = Family[i].FamilyId;
-		    for(int l=0; l< indRecords.length; l++)
-		    	if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
-		    		date = formatter.parse(indRecords[l].BirthDate);
-		    		Children[count].name = indRecords[l].Name;
-		    		break;
-		    	}
-		    Children[count].Birth = date;
-			count++;
-			ChildCount++;
-		  }
-	   }
-	   
-	   OrderSiblings = new String[ChildCount];
-	   for(int l=0; l< Children.length && l < ChildCount; l++){
-		 OrderSiblings[l] =  "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
-		 int num = l;
-		 if(num >= 1)
-		   if(Children[l].FamilyID.equals(Children[--num].FamilyID)){
-			  if(Children[l].Birth.before(Children[num].Birth)){
-				  String Name = "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
-				  OrderSiblings[num] =  Name;
-				  OrderSiblings[l] = "Family " + Children[num].FamilyID + " has a child whose name is "+ Children[num].name;
-			  } 
-		   } 
-	   }
-	   for(int o=0; o<ChildCount; o++)
-		   System.out.println(OrderSiblings[o]);
+			for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
+				Children[count] = new ChildInfo();
+				Children[count].individualsID = Family[i].ChlidrenIds.get(j);
+				Children[count].FamilyID = Family[i].FamilyId;
+				for(int l=0; l< indRecords.length; l++)
+					if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
+						date = formatter.parse(indRecords[l].BirthDate);
+						Children[count].name = indRecords[l].Name;
+						break;
+					}
+				Children[count].Birth = date;
+				count++;
+				ChildCount++;
+			}
+		}
+
+		OrderSiblings = new String[ChildCount];
+		for(int l=0; l< Children.length && l < ChildCount; l++){
+			OrderSiblings[l] =  "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
+			int num = l;
+			if(num >= 1)
+				if(Children[l].FamilyID.equals(Children[--num].FamilyID)){
+					if(Children[l].Birth.before(Children[num].Birth)){
+						String Name = "Family " + Children[l].FamilyID + " has a child whose name is "+ Children[l].name;
+						OrderSiblings[num] =  Name;
+						OrderSiblings[l] = "Family " + Children[num].FamilyID + " has a child whose name is "+ Children[num].name;
+					} 
+				} 
+		}
+		for(int o=0; o<ChildCount; o++)
+			System.out.println(OrderSiblings[o]);
 	}
-	
-	
+
+
 	private static void CheckHusbandIsMale() {
 		String HusbandId;
 		for(int i=0; i< Family.length && i<= item1; i++){
 			HusbandId = Family[i].HusbandId;
 			for(int l=0; l< indRecords.length; l++){
-		       if(indRecords[l].Id.equals(HusbandId)){
-		    	   if(! indRecords[l].SEX.equalsIgnoreCase("M"))
-		    		   System.out.println("Family with "+Family[i].FamilyId+" has a husband "
-		    	                     +HusbandId+" , "+indRecords[l].Name+" , who isn't a male.");
-		    	   break;
-		       }
-		    }
+				if(indRecords[l].Id.equals(HusbandId)){
+					if(! indRecords[l].SEX.equalsIgnoreCase("M"))
+						System.out.println("Family with "+Family[i].FamilyId+" has a husband "
+								+HusbandId+" , "+indRecords[l].Name+" , who isn't a male.");
+					break;
+				}
+			}
 		}
 	}
-	
+
 	private static void CheckDivorseAfterToday ()
 	{
 		int i;
@@ -425,22 +425,22 @@ public class GEDCOM {
 			{
 				if(Family[i].DivorseDate!=null)
 				{
-				Date Divdate = formatter.parse(Family[i].DivorseDate);
+					Date Divdate = formatter.parse(Family[i].DivorseDate);
 					if(Divdate.after(today))
 					{
 						System.out.println("Error in file:The divorce date in Family " +Family[i].FamilyId+ " is not valid. The date is a future date");
 					}
-					
+
 				}
 			}
 			catch(ParseException e) {
-					e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
-		
+
 	}	
 	//Check Wife is female
-	
+
 	public static void CheckWifeFemale(){
 		int i, j;
 		System.out.println("\n********************Check for Wife Gender******************");
@@ -454,38 +454,38 @@ public class GEDCOM {
 					//System.out.println(indRecords[i].SEX);
 					if(!indRecords[i].SEX.equalsIgnoreCase("F"))
 					{
-						
+
 						System.out.println("Error in file: The wife in Family" +Family[i].FamilyId+ " , "+indRecords[j].Name+"is not female");
 					}
 				}
 			}
 		}
-		
+
 	}
-	
+
 	private static void CheckDivorceBeforeMarriage ()
 	{ 	System.out.println("********** Divorce Before Marriage*********");
-		
-				for (int j=0;j<Family.length && Family[j]!=null  ;j++)
-				{ 
-			if (Family[j].MarriageDate!=null && Family[j].DivorseDate!=null )
+
+	for (int j=0;j<Family.length && Family[j]!=null  ;j++)
+	{ 
+		if (Family[j].MarriageDate!=null && Family[j].DivorseDate!=null )
 			try {
-			
+
 				Date Mdate = formatter.parse(Family[j].MarriageDate);
 				Date Ddate= formatter.parse(Family[j].DivorseDate);
 				//System.out.print (Mdate +"  "+Ddate);
-			
+
 				if (Mdate.compareTo(Ddate)>0)
-				
-				System.out.println(" Family "+ Family[j].FamilyId +"  has divorce date("+ Family[j].DivorseDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
-				
-				
+
+					System.out.println(" Family "+ Family[j].FamilyId +"  has divorce date("+ Family[j].DivorseDate+") before Marriage date ("+ Family[j].MarriageDate+") " );
+
+
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}}
 
 	}
-	
+
 	private static void CheckChildBirthBeforeParent() {
 		ArrayList<Date> ChildrenBirthDates = new ArrayList<Date>();
 		Date HusbandBirthDate = new Date();
@@ -496,27 +496,27 @@ public class GEDCOM {
 			String HusbId = Family[i].HusbandId;
 			String WifeId = Family[i].WifeId;
 			ArrayList<String> FamilyChildrenIds = Family[i].ChlidrenIds;
-			
+
 			for (int j = 0; j < indRecords.length && indRecords[j] != null; j++) {
-					if (indRecords[j].Id.equalsIgnoreCase(HusbId)) {
-					   try { 
-							HusbandBirthDate = formatter
-									.parse(indRecords[j].BirthDate);
-							HusbId = "";
-						}catch (ParseException e) {
-								e.printStackTrace();
-						}						
-					} else if (indRecords[j].Id.equalsIgnoreCase(WifeId)) {
-					  try { 
+				if (indRecords[j].Id.equalsIgnoreCase(HusbId)) {
+					try { 
+						HusbandBirthDate = formatter
+								.parse(indRecords[j].BirthDate);
+						HusbId = "";
+					}catch (ParseException e) {
+						e.printStackTrace();
+					}						
+				} else if (indRecords[j].Id.equalsIgnoreCase(WifeId)) {
+					try { 
 						WifeBirthDate = formatter
 								.parse(indRecords[j].BirthDate);
 						WifeId = "";
-					  }catch (ParseException e) {
-							e.printStackTrace();
-					  }
-				    } 
-			 }
-			
+					}catch (ParseException e) {
+						e.printStackTrace();
+					}
+				} 
+			}
+
 			for (int c = 0; c < FamilyChildrenIds.size(); c++)
 				for (int k = 0; k < indRecords.length && indRecords[k] != null; k++) {
 					try {
@@ -529,7 +529,7 @@ public class GEDCOM {
 					}
 				}
 			//FamilyChildrenIds.clear();
-            
+
 			for (int c = 0; c < ChildrenBirthDates.size(); c++) {
 				if (ChildrenBirthDates.get(c).compareTo(HusbandBirthDate) < 0
 						|| ChildrenBirthDates.get(c).compareTo(WifeBirthDate) < 0)
@@ -537,55 +537,55 @@ public class GEDCOM {
 			}		
 		}
 	}
-	
+
 	private static void PrintMalesAndFemales() {
 		ArrayList<String> Males = new ArrayList<String>();
 		ArrayList<String> Females = new ArrayList<String>();		
 		System.out.println("\n*****************Print Females and Males***************");
-		
+
 		for (int i = 0; i < indRecords.length && indRecords[i] != null; i++) {
 			if(indRecords[i].SEX.equalsIgnoreCase("M"))
 				Males.add(indRecords[i].Name);
 			else if(indRecords[i].SEX.equalsIgnoreCase("F"))
 				Females.add(indRecords[i].Name);
 		}
-		
+
 		System.out.println("\nThe Males in this family are: ");
 		for (int j = 0; j < Males.size() ; j++) 
 			System.out.println(Males.get(j));
-		
+
 		System.out.println("\nThe Females in this family are: ");
 		for (int k = 0; k < Females.size() ; k++) 
 			System.out.println(Females.get(k));		
 	}
 	private static void PrintBasedOnBirthMonth() throws ParseException  {
 
-		
+
 		Date Dat1;
-		
+
 		int Month1;
-		
+
 		System.out.println("********** Print Based On BirthMonth*********");
 		String [] months={"January", "February", "March", "Aprl","May", "June", "July","Augest","September","October","November","December"};
 		int flag=0;
 		for (int i=0;i<11;i++)
-			{System.out.println ("Individuals who were born on "+months[i]);
-			flag=0;
-			for (int j=0;j<indRecords.length && indRecords[j]!=null;j++)
-			{
-				Dat1=formatter.parse(indRecords[j].BirthDate);
-				Month1=Dat1.getMonth();
-				if(Month1==i)
-					{System.out.println(indRecords[j].Name);
-					flag=1;
-					}
-			}	
-			if (flag==0)
-				System.out.println("None");
+		{System.out.println ("Individuals who were born on "+months[i]);
+		flag=0;
+		for (int j=0;j<indRecords.length && indRecords[j]!=null;j++)
+		{
+			Dat1=formatter.parse(indRecords[j].BirthDate);
+			Month1=Dat1.getMonth();
+			if(Month1==i)
+			{System.out.println(indRecords[j].Name);
+			flag=1;
 			}
+		}	
+		if (flag==0)
+			System.out.println("None");
+		}
 		System.out.println("*****************************");
 	}
-		/*IndividualRecord temp;
+	/*IndividualRecord temp;
 		IndividualRecord[] indRec= new IndividualRecord[indRecords.length];
 		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++)
 		{
@@ -638,23 +638,23 @@ public class GEDCOM {
 		{
 			count++;
 		}
-		
+
 		for (i=0;indRecords[i]!=null ; i++) {
-		      for (j = 0; j < count - i - 1; j++) {
-		        if (indRecords[j].age > indRecords[j+1].age) 
-		        {
-		          swap       = indRecords[j];
-		          indRecords[j]   = indRecords[j+1];
-		          indRecords[j+1] = swap;
-		        }
-		      }
-		    } 
-		
+			for (j = 0; j < count - i - 1; j++) {
+				if (indRecords[j].age > indRecords[j+1].age) 
+				{
+					swap       = indRecords[j];
+					indRecords[j]   = indRecords[j+1];
+					indRecords[j+1] = swap;
+				}
+			}
+		} 
+
 		for (i=0; i<n && indRecords[i]!=null ; i++)
 		{
 			System.out.println("Name : "+indRecords[i].Name+"\n Age : "+ indRecords[i].age+"\n");
 		}
-		
+
 	}
 	public static void CheckAgeLimit()
 	{ 
@@ -668,237 +668,221 @@ public class GEDCOM {
 			}
 		}
 	}
-	
+
 	private static void CheckMarriageBeforeBirth() {
 		System.out.println("\n*****************Check Parent's Marriage not Before their Birth Dates***************");
-		    Date HusbandBirth = new Date();
-		    Date WifeBirth = new Date();
-		    Date MarriageDate = new Date();
-		    for (int j=0; j< Family.length && Family[j]!= null; j++) { 
-			  if (Family[j].MarriageDate != null ){
+		Date HusbandBirth = new Date();
+		Date WifeBirth = new Date();
+		Date MarriageDate = new Date();
+		for (int j=0; j< Family.length && Family[j]!= null; j++) { 
+			if (Family[j].MarriageDate != null ){
 				try {
 					for (int i = 0; i < indRecords.length	&& indRecords[i] != null; i++) {
 						if (indRecords[i].Id.equalsIgnoreCase(Family[j].HusbandId))
 							HusbandBirth = formatter
-									.parse(indRecords[i].BirthDate);
+							.parse(indRecords[i].BirthDate);
 						else if (indRecords[i].Id.equalsIgnoreCase(Family[j].WifeId))
-							WifeBirth = formatter
-									.parse(indRecords[i].BirthDate);
+							WifeBirth = formatter.parse(indRecords[i].BirthDate);
 					}
 					MarriageDate = formatter.parse(Family[j].MarriageDate);
 
 					if (HusbandBirth.compareTo(MarriageDate) > 0)
-						System.out.println("Parents in the Family "
-								+ Family[j].FamilyId + "  has marriage date("
-								+ Family[j].MarriageDate
-								+ ") before their Birth date. ");
+						System.out.println("Parents in the Family "+ Family[j].FamilyId + "  has marriage date("+ Family[j].MarriageDate+ ") before their Birth date. ");
 					else if (WifeBirth.compareTo(MarriageDate) > 0)
-						System.out.println("Parents in the Family "
-								+ Family[j].FamilyId + "  has marriage date("
-								+ Family[j].MarriageDate
-								+ ") before their Birth date. ");
+						System.out.println("Parents in the Family "+ Family[j].FamilyId + "  has marriage date("	+ Family[j].MarriageDate+ ") before their Birth date. ");
 
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-		    }
-		  }
-	 }
-	
+			}
+		}
+	}
+
 	private static void PrintFamiliesChildren() {
 		System.out.println("\n*****************Print Families' Children***************");
 		for (int i = 0; i < Family.length && Family[i] != null; i++){
-		   if(Family[i].ChlidrenIds.size() > 0)
-		     System.out.println("Family's " + Family[i].FamilyId + " Children: ");
-		   for (int c = 0; c < Family[i].ChlidrenIds.size(); c++) 
-					System.out.println(Family[i].ChlidrenIds.get(c));
+			if(Family[i].ChlidrenIds.size() > 0)
+				System.out.println("Family's " + Family[i].FamilyId + " Children: ");
+			for (int c = 0; c < Family[i].ChlidrenIds.size(); c++) 
+				System.out.println(Family[i].ChlidrenIds.get(c));
 		}
 	}
-private static void ListSiblingAgeDiff()
+	private static void ListSiblingAgeDiff()
 	{
 		ChildInfo[] Children = new ChildInfo[indRecords.length];
 		String[] SiblingsAge; 
 		int count = 0, ChildCount = 0;
-	    
+
 		System.out.println("\n*****************List age difference of siblings *****************");
 		for(int i=0; i< Family.length  && i<= item1; i++){
-		  for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
-			Children[count] = new ChildInfo();
-			Children[count].individualsID = Family[i].ChlidrenIds.get(j);
-			Children[count].FamilyID = Family[i].FamilyId;
-		    for(int l=0; l< indRecords.length; l++)
-		    	if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
-		    		Children[count].name = indRecords[l].Name;
-		    		 Children[count].age = indRecords[l].age;
-		    		break;
-		    	}
-			count++;
-			ChildCount++;
-		  }
-	   }
-	   int agediff;
-	  SiblingsAge = new String[ChildCount];
-	   for(int l=0; l< Children.length && l < ChildCount; l++)
-	   {
-		   for(int v=l+1; v< Children.length && v < ChildCount; v++)
-		   {
-		   if(Children[l].FamilyID.equals(Children[v].FamilyID)){
-			 agediff= Math.abs(Children[l].age-Children[v].age);
-				  String Name = Children[l].FamilyID+"Age difference between " + Children[l].name +" and "+ Children[v].name +"is " +agediff  ;
-				  SiblingsAge[v] =  Name;
-				   } 
-		   }
-		  
-	   }
-	   for(int o=0; o<ChildCount; o++)
-		   if(SiblingsAge[o]!=null)
-		   System.out.println(SiblingsAge[o]);
-	}
-
-private static void CheckSiblingMarriage()
-{
-	String Husfamc="husfc", Wifefamc="wifefc", famid1="fam1", famid2="fam2" ;
-	String husname=null, wifename =null;
-	int m=0, n=0;
-	String spouse;
-	String[] child2=new String[100];
-	System.out.println("\n*****************Sibling Marriage***************");
-	for (int f = 0; f < Family.length && Family[f] != null; f++)
-	{
-	for (int i = 0; i < Family.length && Family[i] != null; i++)
-	{
-		for(int k=i+1;k < Family.length && Family[k] != null; k++)
-		{ 
-			if(Family[i].HusbandId.equals(Family[k].HusbandId)||Family[i].WifeId.equals(Family[k].WifeId))
-			{
-				famid1=Family[i].FamilyId;
-				famid2=Family[k].FamilyId;
-				m=1;
-				break;
+			for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
+				Children[count] = new ChildInfo();
+				Children[count].individualsID = Family[i].ChlidrenIds.get(j);
+				Children[count].FamilyID = Family[i].FamilyId;
+				for(int l=0; l< indRecords.length; l++)
+					if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
+						Children[count].name = indRecords[l].Name;
+						Children[count].age = indRecords[l].age;
+						break;
+					}
+				count++;
+				ChildCount++;
 			}
 		}
-		if(m==1)
-			break;
-	}
-		for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
+		int agediff;
+		SiblingsAge = new String[ChildCount];
+		for(int l=0; l< Children.length && l < ChildCount; l++)
 		{
-			if(indRecords[j].FamC!=null)
+			for(int v=l+1; v< Children.length && v < ChildCount; v++)
 			{
-				if(indRecords[j].FamC.equals(famid1))
-				{
-					spouse=indRecords[j].FamS;
-					for (int  z= 0; z < indRecords.length	&& indRecords[z] != null; z++)
+				if(Children[l].FamilyID.equals(Children[v].FamilyID)){
+					agediff= Math.abs(Children[l].age-Children[v].age);
+					String Name = Children[l].FamilyID+"Age difference between " + Children[l].name +" and "+ Children[v].name +"is " +agediff  ;
+					SiblingsAge[v] =  Name;
+				} 
+			}
+
+		}
+		for(int o=0; o<ChildCount; o++)
+			if(SiblingsAge[o]!=null)
+				System.out.println(SiblingsAge[o]);
+	}
+
+	private static void CheckSiblingMarriage()
+	{
+		String Husfamc="husfc", Wifefamc="wifefc", famid1="fam1", famid2="fam2" ;
+		String husname=null, wifename =null;
+		int m=0, n=0;
+		String spouse;
+		String[] child2=new String[100];
+		System.out.println("\n*****************Sibling Marriage***************");
+		for (int f = 0; f < Family.length && Family[f] != null; f++)
+		{
+			for (int i = 0; i < Family.length && Family[i] != null; i++)
+			{
+				for(int k=i+1;k < Family.length && Family[k] != null; k++)
+				{ 
+					if(Family[i].HusbandId.equals(Family[k].HusbandId)||Family[i].WifeId.equals(Family[k].WifeId))
 					{
-						if(spouse!=null && indRecords[z].FamS!=null)
+						famid1=Family[i].FamilyId;
+						famid2=Family[k].FamilyId;
+						m=1;
+						break;
+					}
+				}
+				if(m==1)
+					break;
+			}
+			for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
+			{
+				if(indRecords[j].FamC!=null)
+				{
+					if(indRecords[j].FamC.equals(famid1))
+					{
+						spouse=indRecords[j].FamS;
+						for (int  z= 0; z < indRecords.length	&& indRecords[z] != null; z++)
 						{
-						if(indRecords[z].FamS.equals(spouse))
-							if(indRecords[z].FamC!=null)
-								if(indRecords[z].FamC.equals(famid2))
-									{
-									System.out.println("The spouses "+indRecords[j].Id+" "+indRecords[j].Name+"and " +indRecords[j].Id+indRecords[z].Name+" of the Family "
-									+indRecords[z].FamS+" are siblings");
-									n=1;
-									break;
-									}
+							if(spouse!=null && indRecords[z].FamS!=null)
+							{
+								if(indRecords[z].FamS.equals(spouse))
+									if(indRecords[z].FamC!=null)
+										if(indRecords[z].FamC.equals(famid2))
+										{
+											System.out.println("The spouses "+indRecords[j].Id+" "+indRecords[j].Name+"and " +indRecords[j].Id+indRecords[z].Name+" of the Family "
+													+indRecords[z].FamS+" are siblings");
+											n=1;
+											break;
+										}
+							}
 						}
 					}
 				}
+				if(n==1)
+					break;
 			}
-			if(n==1)
-				break;
 		}
-	}
-	for (int i = 0; i < Family.length && Family[i] != null; i++)
-	{
-		for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
+		for (int i = 0; i < Family.length && Family[i] != null; i++)
 		{
-			//System.out.println(Family[i].HusbandId +indRecords[j].Id );
-			if(Family[i].HusbandId.equals(indRecords[j].Id))
+			for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
 			{
-			Husfamc=indRecords[j].FamC;
-			husname=indRecords[j].Name;
-			}
-			else if(Family[i].WifeId.equals(indRecords[j].Id))
-			{
-			
-			Wifefamc=indRecords[j].FamC;
-			wifename=indRecords[j].Name;
-			}
-				
-		}
-		if(Husfamc!=null && Wifefamc!=null)
-		{
-		if(Husfamc.equals(Wifefamc))
-			{
-			System.out.println("The spouses "+Family[i].HusbandId+" "+husname+" and " +Family[i].WifeId+" "+wifename+" of the Family "+indRecords[i].FamS+" are siblings");
-			Husfamc="Husfamc";
-			Husfamc="Wifefamc";
-			}
-		}
-	}
-}
+				//System.out.println(Family[i].HusbandId +indRecords[j].Id );
+				if(Family[i].HusbandId.equals(indRecords[j].Id))
+				{
+					Husfamc=indRecords[j].FamC;
+					husname=indRecords[j].Name;
+				}
+				else if(Family[i].WifeId.equals(indRecords[j].Id))
+				{
 
-public static void below14Marriage() {
-	System.out.println("***************Marraige age not below 14************");
-	for (int j=0;j<Family.length && Family[j]!=null  ;j++){
-		for (int i=0; i<indRecords.length && indRecords[i]!=null; i++)
-			if (indRecords[i].BirthDate!=null && Family[j].MarriageDate!=null){
-			if (indRecords[i].Id.equals(Family[j].HusbandId)|| (indRecords[i].Id.equals(Family[j].WifeId)))
+					Wifefamc=indRecords[j].FamC;
+					wifename=indRecords[j].Name;
+				}
+
+			}
+			if(Husfamc!=null && Wifefamc!=null)
 			{
-				Date Mdate, Bdate;
-				//LocalDate MD,BD;
+				if(Husfamc.equals(Wifefamc))
+				{
+					System.out.println("The spouses "+Family[i].HusbandId+" "+husname+" and " +Family[i].WifeId+" "+wifename+" of the Family "+indRecords[i].FamS+" are siblings");
+					Husfamc="Husfamc";
+					Husfamc="Wifefamc";
+				}
+			}
+		}
+	}
+
+	public static void below14Marriage() {
+		System.out.println("***************Marraige age not below 14************");
+		for (int j=0;j<Family.length && Family[j]!=null  ;j++){
+			for (int i=0; i<indRecords.length && indRecords[i]!=null; i++)
+				if (indRecords[i].BirthDate!=null && Family[j].MarriageDate!=null){
+					if (indRecords[i].Id.equals(Family[j].HusbandId)|| (indRecords[i].Id.equals(Family[j].WifeId)))
+					{
+						Date Mdate, Bdate;
+						//LocalDate MD,BD;
+						try {
+							Mdate = formatter.parse(Family[j].MarriageDate);
+							Bdate= formatter.parse(indRecords[i].BirthDate);
+
+							int years= Mdate.getYear()-Bdate.getYear();
+							int months=Mdate.getMonth()-Bdate.getMonth();
+							if (months<0)
+								years--;
+							if (years<=14)
+								System.out.println("Individual "+indRecords[i].Name+"  with Id:  "+indRecords[i].Id +"  got married below 14 ");
+						} catch (ParseException e) {
+
+							e.printStackTrace();
+						}
+
+					}
+				}
+
+		}
+
+	}
+	public static void deathNotAfterCurrDate ()
+	{
+		System.out.println("***********Death Should not be after Current date***************");
+		Date Ddate;
+		Date Curr=new Date();
+		for ( int i=0;i<indRecords.length && indRecords[i]!=null; i++)
+		{
+			if (indRecords[i].DeathDate!=null)
+			{ 
 				try {
-					Mdate = formatter.parse(Family[j].MarriageDate);
-				 Bdate= formatter.parse(indRecords[i].BirthDate);
-				 
-					int years= Mdate.getYear()-Bdate.getYear();
-					int months=Mdate.getMonth()-Bdate.getMonth();
-					if (months<0)
-						years--;
-					if (years<=14)
-					System.out.println("Individual "+indRecords[i].Name+"  with Id:  "+indRecords[i].Id +"  got married below 14 ");
+					Ddate=formatter.parse(indRecords[i].DeathDate);
+					if (Ddate.after(Curr))
+						System.out.println("Individual Named "+indRecords[i].Name+"   with Id: "+indRecords[i].Id+
+								" has death date "+indRecords[i].DeathDate+" which is after the current date  "+ Curr);
 				} catch (ParseException e) {
-					
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-			
-			
-			}}
-		
-					
-	}
-	
-}
-public static void deathNotAfterCurrDate ()
-{
-	System.out.println("***********Death Should not be after Current date***************");
-	Date Ddate;
-	Date Curr=new Date();
-	for ( int i=0;i<indRecords.length && indRecords[i]!=null; i++)
-	{
-		if (indRecords[i].DeathDate!=null)
-		{ 
-			try {
-				Ddate=formatter.parse(indRecords[i].DeathDate);
-				if (Ddate.after(Curr))
-					System.out.println("Individual Named "+indRecords[i].Name+"   with Id: "+indRecords[i].Id+
-							" has death date "+indRecords[i].DeathDate+" which is after the current date  "+ Curr);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
-			
-		}
+		}	
 	}
-	
-	
-	
-	
-	
-	
-	
-}
 }
 
 

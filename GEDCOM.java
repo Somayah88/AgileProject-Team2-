@@ -44,6 +44,15 @@ class IndividualRecord {
 		cal.setTime(Bdate);
 		cal1.setTime(today);
 		 age = cal1.get(Calendar.YEAR)-cal.get(Calendar.YEAR);
+		 int currMonth = cal1.get(Calendar.MONTH) + 1;
+	      int birthMonth = cal.get(Calendar.MONTH) + 1;
+	      int months = currMonth - birthMonth;
+	      if (months < 0)
+	    	age--;
+	      //else if (months == 0 && cal1.get(Calendar.DATE) < cal.get(Calendar.DATE))
+	        //age--;
+	      else if (months == 12)
+	        age++;
 		 System.out.println(age);
 		 return age;
 	}
@@ -64,6 +73,7 @@ class ChildInfo {
 	String FamilyID;
 	String name;
 	Date Birth = new Date();
+	int age;
 }
 /**************************************************/
 public class GEDCOM {
@@ -82,7 +92,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("My-Family-S02.ged");
+		FileInputStream fis = new FileInputStream("C:/Users/zeebee/Downloads/My-Family.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		
 		String Line, FamilyId = null;
@@ -199,6 +209,8 @@ public class GEDCOM {
                 
                 CheckMarriageBeforeBirth();
 		PrintFamiliesChildren();
+		ListSiblingAgeDiff();
+		CheckSiblingMarriage();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -699,5 +711,128 @@ public class GEDCOM {
 					System.out.println(Family[i].ChlidrenIds.get(c));
 		}
 	}
+private static void ListSiblingAgeDiff()
+	{
+		ChildInfo[] Children = new ChildInfo[indRecords.length];
+		String[] SiblingsAge; 
+		int count = 0, ChildCount = 0;
+	    
+		System.out.println("\n*****************List age difference of siblings *****************");
+		for(int i=0; i< Family.length  && i<= item1; i++){
+		  for (int j=0; j<Family[i].ChlidrenIds.size() ; j++) {
+			Children[count] = new ChildInfo();
+			Children[count].individualsID = Family[i].ChlidrenIds.get(j);
+			Children[count].FamilyID = Family[i].FamilyId;
+		    for(int l=0; l< indRecords.length; l++)
+		    	if(indRecords[l].Id.equals(Family[i].ChlidrenIds.get(j))){
+		    		Children[count].name = indRecords[l].Name;
+		    		 Children[count].age = indRecords[l].age;
+		    		break;
+		    	}
+			count++;
+			ChildCount++;
+		  }
+	   }
+	   int agediff;
+	  SiblingsAge = new String[ChildCount];
+	   for(int l=0; l< Children.length && l < ChildCount; l++)
+	   {
+		   for(int v=l+1; v< Children.length && v < ChildCount; v++)
+		   {
+		   if(Children[l].FamilyID.equals(Children[v].FamilyID)){
+			 agediff= Math.abs(Children[l].age-Children[v].age);
+				  String Name = Children[l].FamilyID+"Age difference between " + Children[l].name +" and "+ Children[v].name +"is " +agediff  ;
+				  SiblingsAge[v] =  Name;
+				   } 
+		   }
+		  
+	   }
+	   for(int o=0; o<ChildCount; o++)
+		   if(SiblingsAge[o]!=null)
+		   System.out.println(SiblingsAge[o]);
+	}
+
+private static void CheckSiblingMarriage()
+{
+	String Husfamc="husfc", Wifefamc="wifefc", famid1="fam1", famid2="fam2" ;
+	String husname=null, wifename =null;
+	int m=0, n=0;
+	String spouse;
+	String[] child2=new String[100];
+	System.out.println("\n*****************Sibling Marriage***************");
+	for (int f = 0; f < Family.length && Family[f] != null; f++)
+	{
+	for (int i = 0; i < Family.length && Family[i] != null; i++)
+	{
+		for(int k=i+1;k < Family.length && Family[k] != null; k++)
+		{ 
+			if(Family[i].HusbandId.equals(Family[k].HusbandId)||Family[i].WifeId.equals(Family[k].WifeId))
+			{
+				famid1=Family[i].FamilyId;
+				famid2=Family[k].FamilyId;
+				m=1;
+				break;
+			}
+		}
+		if(m==1)
+			break;
+	}
+		for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
+		{
+			if(indRecords[j].FamC!=null)
+			{
+				if(indRecords[j].FamC.equals(famid1))
+				{
+					spouse=indRecords[j].FamS;
+					for (int  z= 0; z < indRecords.length	&& indRecords[z] != null; z++)
+					{
+						if(spouse!=null && indRecords[z].FamS!=null)
+						{
+						if(indRecords[z].FamS.equals(spouse))
+							if(indRecords[z].FamC!=null)
+								if(indRecords[z].FamC.equals(famid2))
+									{
+									System.out.println("The spouses "+indRecords[j].Id+" "+indRecords[j].Name+"and " +indRecords[j].Id+indRecords[z].Name+" of the Family "
+									+indRecords[z].FamS+" are siblings");
+									n=1;
+									break;
+									}
+						}
+					}
+				}
+			}
+			if(n==1)
+				break;
+		}
+	}
+	for (int i = 0; i < Family.length && Family[i] != null; i++)
+	{
+		for (int  j= 0; j < indRecords.length	&& indRecords[j] != null; j++)
+		{
+			//System.out.println(Family[i].HusbandId +indRecords[j].Id );
+			if(Family[i].HusbandId.equals(indRecords[j].Id))
+			{
+			Husfamc=indRecords[j].FamC;
+			husname=indRecords[j].Name;
+			}
+			else if(Family[i].WifeId.equals(indRecords[j].Id))
+			{
+			
+			Wifefamc=indRecords[j].FamC;
+			wifename=indRecords[j].Name;
+			}
+				
+		}
+		if(Husfamc!=null && Wifefamc!=null)
+		{
+		if(Husfamc.equals(Wifefamc))
+			{
+			System.out.println("The spouses "+Family[i].HusbandId+" "+husname+" and " +Family[i].WifeId+" "+wifename+" of the Family "+indRecords[i].FamS+" are siblings");
+			Husfamc="Husfamc";
+			Husfamc="Wifefamc";
+			}
+		}
+	}
+}
 }
 

@@ -92,7 +92,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("C:/Users/zeebee/Downloads/My-Family.ged");
+		FileInputStream fis = new FileInputStream("Sprint03Test.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 		
 		String Line, FamilyId = null;
@@ -211,6 +211,9 @@ public class GEDCOM {
 		PrintFamiliesChildren();
 		ListSiblingAgeDiff();
 		CheckSiblingMarriage();
+		below14Marriage();
+		deathNotAfterCurrDate ();
+		
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -834,5 +837,69 @@ private static void CheckSiblingMarriage()
 		}
 	}
 }
+
+public static void below14Marriage() {
+	System.out.println("***************Marraige age not below 14************");
+	for (int j=0;j<Family.length && Family[j]!=null  ;j++){
+		for (int i=0; i<indRecords.length && indRecords[i]!=null; i++)
+			if (indRecords[i].BirthDate!=null && Family[j].MarriageDate!=null){
+			if (indRecords[i].Id.equals(Family[j].HusbandId)|| (indRecords[i].Id.equals(Family[j].WifeId)))
+			{
+				Date Mdate, Bdate;
+				//LocalDate MD,BD;
+				try {
+					Mdate = formatter.parse(Family[j].MarriageDate);
+				 Bdate= formatter.parse(indRecords[i].BirthDate);
+				 
+					int years= Mdate.getYear()-Bdate.getYear();
+					int months=Mdate.getMonth()-Bdate.getMonth();
+					if (months<0)
+						years--;
+					if (years<=14)
+					System.out.println("Individual "+indRecords[i].Name+"  with Id:  "+indRecords[i].Id +"  got married below 14 ");
+				} catch (ParseException e) {
+					
+					e.printStackTrace();
+				}
+				
+			
+			
+			}}
+		
+					
+	}
+	
 }
+public static void deathNotAfterCurrDate ()
+{
+	System.out.println("***********Death Should not be after Current date***************");
+	Date Ddate;
+	Date Curr=new Date();
+	for ( int i=0;i<indRecords.length && indRecords[i]!=null; i++)
+	{
+		if (indRecords[i].DeathDate!=null)
+		{ 
+			try {
+				Ddate=formatter.parse(indRecords[i].DeathDate);
+				if (Ddate.after(Curr))
+					System.out.println("Individual Named "+indRecords[i].Name+"   with Id: "+indRecords[i].Id+
+							" has death date "+indRecords[i].DeathDate+" which is after the current date  "+ Curr);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+}
+}
+
+
 

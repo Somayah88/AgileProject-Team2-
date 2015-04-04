@@ -848,7 +848,10 @@ public class GEDCOM {
 							int months=Mdate.getMonth()-Bdate.getMonth();
 							if (months<0)
 								years--;
-							if (years<=14)
+								if (years<0)
+								System.out.println("For individual  "+indRecords[i].Id+ "the Marraige date and birth dates are wrong**** Marraige date before birthdate");
+							if (years<=14 && years>0)
+						
 								System.out.println("Individual "+indRecords[i].Name+"  with Id:  "+indRecords[i].Id +"  got married below 14 ");
 						} catch (ParseException e) {
 

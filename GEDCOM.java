@@ -92,7 +92,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("Sprint03Test.ged");
+		FileInputStream fis = new FileInputStream("C:/Users/zeebee/Downloads/My-Family.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 
 		String Line, FamilyId = null;
@@ -730,23 +730,20 @@ public class GEDCOM {
 			}
 		}
 		int agediff;
+		
 		SiblingsAge = new String[ChildCount];
-		for(int l=0; l< Children.length && l < ChildCount; l++)
+		for(int l=0; l<Children.length && l <ChildCount; l++)
 		{
 			for(int v=l+1; v< Children.length && v < ChildCount; v++)
 			{
 				if(Children[l].FamilyID.equals(Children[v].FamilyID)){
 					agediff= Math.abs(Children[l].age-Children[v].age);
-					String Name = Children[l].FamilyID+"Age difference between " + Children[l].name +" and "+ Children[v].name +"is " +agediff  ;
-					SiblingsAge[v] =  Name;
+					System.out.println(" Family "+Children[l].FamilyID+" : Age difference between " +Children[l].individualsID+" "+ Children[l].name +" and "+Children[v].individualsID+" "+ Children[v].name +"is " +agediff );
 				} 
 			}
 
 		}
-		for(int o=0; o<ChildCount; o++)
-			if(SiblingsAge[o]!=null)
-				System.out.println(SiblingsAge[o]);
-	}
+			}
 
 	private static void CheckSiblingMarriage()
 	{
@@ -788,8 +785,8 @@ public class GEDCOM {
 									if(indRecords[z].FamC!=null)
 										if(indRecords[z].FamC.equals(famid2))
 										{
-											System.out.println("The spouses "+indRecords[j].Id+" "+indRecords[j].Name+"and " +indRecords[j].Id+indRecords[z].Name+" of the Family "
-													+indRecords[z].FamS+" are siblings");
+											System.out.println("The spouses "+indRecords[j].Id+" "+indRecords[j].Name+"and " +indRecords[z].Id+" "+indRecords[z].Name+" of the Family "
+													+indRecords[z].FamS+" are half siblings");
 											n=1;
 											break;
 										}
@@ -829,6 +826,7 @@ public class GEDCOM {
 				}
 			}
 		}
+		System.out.println("\n");
 	}
 
 	public static void below14Marriage() {
@@ -848,10 +846,7 @@ public class GEDCOM {
 							int months=Mdate.getMonth()-Bdate.getMonth();
 							if (months<0)
 								years--;
-								if (years<0)
-								System.out.println("For individual  "+indRecords[i].Id+ "the Marraige date and birth dates are wrong**** Marraige date before birthdate");
-							if (years<=14 && years>0)
-						
+							if (years<=14)
 								System.out.println("Individual "+indRecords[i].Name+"  with Id:  "+indRecords[i].Id +"  got married below 14 ");
 						} catch (ParseException e) {
 
@@ -887,6 +882,3 @@ public class GEDCOM {
 		}	
 	}
 }
-
-
-

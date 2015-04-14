@@ -213,6 +213,8 @@ public class GEDCOM {
 		CheckSiblingMarriage();
 		below14Marriage();
 		deathNotAfterCurrDate ();
+		ListUnmarried();
+		CheckMarriageAfterToday();
 
 	}
 
@@ -883,5 +885,40 @@ public class GEDCOM {
 
 			}
 		}	
+	}
+	public static void ListUnmarried()
+	{
+		System.out.println("***********Unmarried people in the family***************");
+		for ( int i=0;i<indRecords.length && indRecords[i]!=null; i++)
+		{
+		if (indRecords[i].FamS==null)
+		{
+			System.out.println(indRecords[i].Id+" "+indRecords[i].Name);
+		}
+		}
+	}
+	public static void CheckMarriageAfterToday()
+	{
+		int i;
+		System.out.println("\n********************Check for Marriage date after current date******************");
+		Date today = new Date();
+		for(i=0;i<Family.length && Family[i]!=null;i++)
+		{
+			try
+			{
+				if(Family[i].MarriageDate!=null)
+				{
+					Date Mrgdate = formatter.parse(Family[i].MarriageDate);
+					if(Mrgdate.after(today))
+					{
+						System.out.println("Error in file:The marriage date in Family " +Family[i].FamilyId+ " is not valid. The date is a future date");
+					}
+
+				}
+			}
+			catch(ParseException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

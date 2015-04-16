@@ -215,7 +215,8 @@ public class GEDCOM {
 		deathNotAfterCurrDate ();
 		ListUnmarried();
 		CheckMarriageAfterToday();
-
+                CheckMotherOver60();
+		CheckBirthBeforeToday();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -921,4 +922,54 @@ public class GEDCOM {
 			}
 		}
 	}
+	public static void CheckMotherOver60() {
+		System.out.println("*********** Mothers Who Gave Birth at the Age of 60 ***************");
+		Date MotherBirth = new Date();
+		ArrayList<Date> SavedChlidrenBirths = new ArrayList<Date>();
+		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) {
+		  try{
+		    if (indRecords[i].SEX.equalsIgnoreCase("F") && indRecords[i].FamS != null){
+		    	MotherBirth = formatter.parse(indRecords[i].BirthDate);
+		    	for(int j=0; j<Family.length && Family[j]!=null; j++) {
+		    	  if(Family[j].FamilyId.equalsIgnoreCase(indRecords[i].FamS)){
+		    		for(int c=0; c<Family[j].ChlidrenIds.size(); c++) {
+		    		  for (int l=0; l<indRecords.length && indRecords[l]!=null ; l++) 
+		    			if(indRecords[l].Id.equalsIgnoreCase(Family[j].ChlidrenIds.get(c))) {
+		    			  SavedChlidrenBirths.add(formatter.parse(indRecords[l].BirthDate));
+		    			}
+		    		}
+		    	  }
+		    	 }
+		     }
+		    for(int d=0; d<SavedChlidrenBirths.size(); d++){
+		    	int years = SavedChlidrenBirths.get(d).getYear() - MotherBirth.getYear();
+		    	if(years >= 60) {
+		    		System.out.println("Mother with an Id " + indRecords[i].Id +
+		    				" has given birth at the age of 60.");
+		    		break;
+		    	}
+		    }
+	    	MotherBirth = new Date();
+	    	SavedChlidrenBirths = new ArrayList<Date>();
+		  } catch (ParseException e) {
+			  e.printStackTrace();
+		  }
+		}
+	}
+	
+	public static void CheckBirthBeforeToday() {
+		System.out.println("*********** Individuals who's Birthdates after Today ***************"); 
+		Date Today = new Date();
+		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) {
+			try {
+				Date IndiBirth = formatter.parse(indRecords[i].BirthDate);
+				if (IndiBirth.compareTo(Today) > 0) {
+					System.out.println("There is an individual with an Id "+indRecords[i].Id
+							  +" who has a wrong birthdate.");
+				}				
+			} catch (ParseException e) {
+				  e.printStackTrace();
+			}			
+		}
+	}	
 }

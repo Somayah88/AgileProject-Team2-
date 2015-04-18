@@ -971,5 +971,41 @@ public class GEDCOM {
 				  e.printStackTrace();
 			}			
 		}
-	}	
+	}
+	public static void ageDifferOfSpouse ()
+	{
+		System.out.println("***********Age Difference between Spouse***************");
+		int wifeAge=0, HusbAge=0, ageDiff=-1;
+		for (int i=0;i<Family.length &&Family[i]!=null;i++)
+		{
+			if (Family[i].HusbandId!=null && Family[i].WifeId!=null)
+			{
+				for ( int j=0; j<indRecords.length && indRecords[j]!=null;j++)
+				{	if (indRecords[j].Id.equals(Family[i].WifeId))
+					wifeAge=indRecords[j].age;
+				if (indRecords[j].Id.equals(Family[i].HusbandId))
+					HusbAge=indRecords[j].age;
+
+				}
+
+				ageDiff=Math.abs(HusbAge-wifeAge);
+			}
+			//System.out.println(wifeAge+"  "+HusbAge);
+
+			if (ageDiff!=-1)
+				System.out.println("The age difference between spouse in Family "+Family[i].FamilyId+" is "+ ageDiff);
+		}
+	}
+
+	public static void moreThan10Children ()
+	{
+		System.out.println("************ More Than 10 Children**************");
+		for ( int i=0;i<Family.length && Family[i]!=null;i++)
+		{
+			if (  Family[i].ChlidrenIds.size()>10	)
+				System.out.println(" Family ("+Family[i].FamilyId+") has more than 10 children");
+
+		}
+	}
+
 }

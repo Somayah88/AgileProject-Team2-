@@ -15,9 +15,9 @@ class IndividualRecord {
 	String SEX, Id, BirthDate, FamS, FamC, Marr, husb, wife, Fam, Name;
 	String DeathDate, MarrDate;
 	int age;
-
+boolean isDead;
 	public IndividualRecord(String id, String name, String sex,
-			String birthdate, String Fams, String Famc, String deathDate) {
+			String birthdate, String Fams, String Famc, String deathDate, boolean isDead) {
 		this.Id = id;
 		this.Name = name;
 		this.SEX = sex;
@@ -25,6 +25,7 @@ class IndividualRecord {
 		this.FamS = Fams;
 		this.FamC = Famc;
 		this.DeathDate=deathDate;
+		this.isDead=isDead;
 		try {
 			age=setage();
 		} catch (ParseException e) {
@@ -84,7 +85,7 @@ public class GEDCOM {
 	private static String IndiTag = null;
 	private static String name = null, sex = null, famc = null, fams = null,
 			id = null, birt = null, death=null, marr=null;
-	private static boolean DeathDateFlag=false, MarriageFlag=false, BirtDateFlag=false, Divorseflag=false;
+	private static boolean DeathDateFlag=false, MarriageFlag=false, BirtDateFlag=false, Divorseflag=false, isDead;
 	static SimpleDateFormat formatter = new SimpleDateFormat("d MMM yyyy");
 
 	@SuppressWarnings("deprecation")
@@ -92,7 +93,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("C:/Users/zeebee/Downloads/My-Family.ged");
+		FileInputStream fis = new FileInputStream("My-Family-S04.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 
 		String Line, FamilyId = null;
@@ -124,7 +125,7 @@ public class GEDCOM {
 			if (Tag.equals("INDI") || Tag.equals("FAM")) {
 				if (id != null && indiFlag != 0) {
 					indRecords[item] = new IndividualRecord(id, name, sex,
-							birt, fams, famc, death);
+							birt, fams, famc, death, isDead);
 					item++;
 					indiFlag = 0;
 					id = null;
@@ -137,6 +138,7 @@ public class GEDCOM {
 					DeathDateFlag=false;
 					MarriageFlag=false;
 					Divorseflag=false;
+					isDead=false;
 					marr=null;
 				} else
 					item = 0;
@@ -156,6 +158,9 @@ public class GEDCOM {
 			if (Tag.equals("DEAT"))
 			{
 				DeathDateFlag=true;
+				if (info[2].equals("Y"))
+					isDead=true;
+					
 
 			}
 			if (Tag.equals("BIRT"))
@@ -204,19 +209,23 @@ public class GEDCOM {
 
 			e.printStackTrace();
 		}
-		SortByAge();
+	SortByAge();
 		CheckAgeLimit();
 
 		CheckMarriageBeforeBirth();
 		PrintFamiliesChildren();
 		ListSiblingAgeDiff();
-		CheckSiblingMarriage();
+	CheckSiblingMarriage();
 		below14Marriage();
 		deathNotAfterCurrDate ();
-		ListUnmarried();
+	ListUnmarried();
 		CheckMarriageAfterToday();
-                CheckMotherOver60();
+              CheckMotherOver60();
 		CheckBirthBeforeToday();
+		ageDifferOfSpouse ();
+		moreThan10Children ();
+		ageDiffBetweecChildParent ();
+		ListDead ();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -972,6 +981,7 @@ public class GEDCOM {
 			}			
 		}
 	}
+	
 	public static void ageDifferOfSpouse ()
 	{
 		System.out.println("***********Age Difference between Spouse***************");
@@ -1008,4 +1018,60 @@ public class GEDCOM {
 		}
 	}
 
+
+	public static void ageDiffBetweecChildParent (){
+		
+		System.out.println("************ Age Difference between Child and Parents**************");
+		
+			int wifeAge=0, HusbAge=0, ageDiff=-1, ageDiff2=-1;
+			for (int i=0;i<Family.length &&Family[i]!=null;i++)
+			{
+				if (Family[i].HusbandId!=null && Family[i].WifeId!=null)
+				{
+					for ( int j=0; j<indRecords.length && indRecords[j]!=null;j++)
+					{	if (indRecords[j].Id.equals(Family[i].WifeId))
+						wifeAge=indRecords[j].age;
+					if (indRecords[j].Id.equals(Family[i].HusbandId))
+						HusbAge=indRecords[j].age;
+
+					}
+					for (int k=0;k<Family[i].ChlidrenIds.size()&& Family[i].ChlidrenIds!=null;k++)
+						for (int j=0;j<indRecords.length && indRecords[j]!=null;j++)
+							if (indRecords[j].Id.equals(Family[i].ChlidrenIds.get(k))){
+								ageDiff=HusbAge-indRecords[j].age;
+								ageDiff2=wifeAge-indRecords[j].age;
+								if (ageDiff >0)
+									System.out.println("Age difference between child "+indRecords[j].Id+ " and his father is "+ageDiff);
+								if(ageDiff2>0)
+									System.out.println("Age difference between child "+indRecords[j].Id+ " and his mother is "+ageDiff2);
+}
+					
+				}
+		}
+	}
+
+		
+	
+	public static void ListDead ()
+	{ System.out.println("********List dead people*******");
+	System.out.println("Dead individuals are");
+		for (int i=0;i<indRecords.length && indRecords[i]!=null;i++)
+		{
+			if (indRecords[i].isDead==true)
+			System.out.println(indRecords[i].Name+" "+indRecords[i].Id);
+		}
+			
+	}
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

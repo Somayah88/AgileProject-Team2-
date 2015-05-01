@@ -1053,8 +1053,9 @@ public class GEDCOM {
 		
 	
 	public static void ListDead ()
-	{ System.out.println("********List dead people*******");
-	System.out.println("Dead individuals are");
+	{ 
+		System.out.println("********List dead people*******");
+	        System.out.println("Dead individuals are");
 		for (int i=0;i<indRecords.length && indRecords[i]!=null;i++)
 		{
 			if (indRecords[i].isDead==true)

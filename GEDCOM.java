@@ -1040,10 +1040,12 @@ public class GEDCOM {
 							if (indRecords[j].Id.equals(Family[i].ChlidrenIds.get(k))){
 								ageDiff=HusbAge-indRecords[j].age;
 								ageDiff2=wifeAge-indRecords[j].age;
-								if (ageDiff >0)
-									System.out.println("Age difference between child "+indRecords[j].Id+ " and his father is "+ageDiff);
-								if(ageDiff2>0)
-									System.out.println("Age difference between child "+indRecords[j].Id+ " and his mother is "+ageDiff2);
+							if (ageDiff>0 && (ageDiff<12))
+									System.out.println("Age difference between child "+indRecords[j].Id+ " and his father is less than 12");
+								if (ageDiff2>0 && (ageDiff2<12))
+									System.out.println("Age difference between child "+indRecords[j].Id+ " and his mother is less than 12");
+                                if (ageDiff<0 || (ageDiff2<0))
+                                	System.out.println("Invalid date: Parent age is less than child age"+ indRecords[j].Id);
 }
 					
 				}

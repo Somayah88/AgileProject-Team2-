@@ -93,7 +93,7 @@ public class GEDCOM {
 		indRecords = new IndividualRecord[5000];
 		Family = new FamilyInfo[1000];
 
-		FileInputStream fis = new FileInputStream("My-Family-S04.ged");
+		FileInputStream fis = new FileInputStream("C:/Users/zeebee/Downloads/My-Family.ged");
 		DataInputStream dis = new DataInputStream(new BufferedInputStream(fis));
 
 		String Line, FamilyId = null;
@@ -226,6 +226,8 @@ public class GEDCOM {
 		moreThan10Children ();
 		ageDiffBetweecChildParent ();
 		ListDead ();
+	ListBirthdayToday();
+	CheckFatherOver80();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -1066,15 +1068,77 @@ public class GEDCOM {
 			
 	}
 		
+public static void CheckFatherOver80()
+{
+	System.out.println("************ Father over 80 **************");
+	int fage=0, r=0;
+	int[] cage;
+	cage=new int[100];
+	for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) 
+	{
+	    if (indRecords[i].SEX.equalsIgnoreCase("m") && indRecords[i].FamS != null)
+	    {
+	    	fage=indRecords[i].age;
+	    	for(int j=0; j<Family.length && Family[j]!=null; j++) 
+	    	{
+	    	  if(Family[j].FamilyId.equalsIgnoreCase(indRecords[i].FamS))
+	    	  {
+	    		for(int c=0; c<Family[j].ChlidrenIds.size(); c++) 
+	    		{
+	    		  for (int l=0; l<indRecords.length && indRecords[l]!=null ; l++) 
+	    			if(indRecords[l].Id.equalsIgnoreCase(Family[j].ChlidrenIds.get(c))) 
+	    			{
+	    			   cage[r]=indRecords[l].age;
+	    			   r++;
+	    			}
+	    		}
+	    	  }
+	    	 }
+	     }
+	    for(int d=0; d<r; d++)
+	    {
+	    	int years = fage - cage[d];
+	    	if(years >= 80)
+	    	{
+	    		System.out.println("The individual "+ indRecords[i].Name +" with Id " + indRecords[i].Id +
+	    				" is a father at age 80.");
+	    		break;
+	    	}
+	    }
+    	r=0;
+	  } 
+	}
+public static void ListBirthdayToday() 
+{
+	System.out.println("*********** Individuals who's Birthday is Today ***************"); 
+	for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) 
+	{
+		try 
+		{
+			Date Bdate = formatter.parse(indRecords[i].BirthDate);
+			Calendar cal = Calendar.getInstance();
+			Date today = new Date();
+			Calendar cal1 = Calendar.getInstance();
+			cal.setTime(Bdate);
+			cal1.setTime(today);
+			int day=cal.get(Calendar.DAY_OF_MONTH);
+			int tod=cal1.get(Calendar.DAY_OF_MONTH);
+			int currMonth = cal1.get(Calendar.MONTH) + 1;
+			int birthMonth = cal.get(Calendar.MONTH) + 1;
 		
+			if (currMonth==birthMonth && day==tod) 
+			{
+				System.out.println(indRecords[i].Id+" "+indRecords[i].Name
+						  +" has birthday today.");
+			}				
+		} catch (ParseException e) {
+			  e.printStackTrace();
+		}			
+	}
+}		
 		
 	
-	
-	
-	
-	
-	
-	
+
 	
 	
 }

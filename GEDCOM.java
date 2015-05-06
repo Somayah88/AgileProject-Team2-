@@ -226,8 +226,10 @@ public class GEDCOM {
 		moreThan10Children ();
 		ageDiffBetweecChildParent ();
 		ListDead ();
-	ListBirthdayToday();
-	CheckFatherOver80();
+	        ListBirthdayToday();
+	        CheckFatherOver80();
+	        ListMarriedPeople();
+	        ListSameDMDeathDatePeople();
 	}
 
 	private static void CheckIndivduals(String Tag, String[] info) {
@@ -1135,7 +1137,41 @@ public static void ListBirthdayToday()
 			  e.printStackTrace();
 		}			
 	}
-}		
+}
+  	public static void ListMarriedPeople(){
+	   System.out.println("*********** List All Married People ***************"); 
+	   for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) {
+		 if(!(indRecords[i].isDead)){
+			 if((indRecords[i].FamS != null)){
+				System.out.println("The individual with Id " + indRecords[i].Id + 
+						 " is alive and married. "); 
+			 }
+		 }
+	   }
+	}
+	
+	public static void ListSameDMDeathDatePeople(){
+		System.out.println("*********** List All People who died in same Day, Month as today ***************"); 
+		Calendar now = Calendar.getInstance();
+		int month = now.get(Calendar.MONTH) + 1; 
+		int day = now.get(Calendar.DAY_OF_MONTH);
+		for (int i=0; i<indRecords.length && indRecords[i]!=null ; i++) {
+			if(indRecords[i].DeathDate != null){
+			 try{	 
+				Date DDate = formatter.parse(indRecords[i].DeathDate);
+				Calendar cal = Calendar.getInstance();
+			    cal.setTime(DDate);
+			    int month1 = cal.get(Calendar.MONTH) + 1;
+			    int day1 = cal.get(Calendar.DAY_OF_MONTH);
+				if(month == month1 && day == day1)
+					System.out.println("The individual with Id " + indRecords[i].Id + 
+						 " has same death date as today. "); 
+			 } catch (ParseException e) {
+				  e.printStackTrace();
+			 }	
+			}
+		}
+	}
 		
 	
 
